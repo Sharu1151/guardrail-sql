@@ -57,9 +57,7 @@ st.markdown("""
     /* 2. Global Light Enterprise SaaS Canvas */
     html, body, .stApp {
         font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
-        background-color: #f8fafc !important;
-        background-image: radial-gradient(#e2e8f0 1.2px, transparent 1.2px) !important;
-        background-size: 28px 28px !important;
+        background-color: #f1f5f9 !important;
         color: #0f172a !important;
     }
     .main .block-container {
@@ -190,12 +188,12 @@ st.markdown("""
     div[data-testid="column"] button[kind="primary"] {
         background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
         color: #ffffff !important;
-        border: 1px solid #0f172a !important;
+        border: 2px solid #0f172a !important;
         border-radius: 12px !important;
         padding: 12px 18px !important;
-        font-weight: 700 !important;
-        font-size: 13.5px !important;
-        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.18) !important;
+        font-weight: 800 !important;
+        font-size: 14px !important;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.25) !important;
         letter-spacing: -0.2px !important;
         transition: all 0.2s ease !important;
         display: inline-flex !important;
@@ -204,17 +202,17 @@ st.markdown("""
     }
     div[data-testid="column"] button[kind="primary"]:hover {
         transform: translateY(-1px) !important;
-        box-shadow: 0 6px 16px rgba(15, 23, 42, 0.28) !important;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.35) !important;
     }
     div[data-testid="column"] button[kind="secondary"] {
         background: #ffffff !important;
-        color: #475569 !important;
-        border: 1px solid #e2e8f0 !important;
+        color: #0f172a !important;
+        border: 2px solid #cbd5e1 !important;
         border-radius: 12px !important;
         padding: 12px 18px !important;
-        font-weight: 600 !important;
-        font-size: 13.5px !important;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+        font-weight: 700 !important;
+        font-size: 14px !important;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.06) !important;
         letter-spacing: -0.2px !important;
         transition: all 0.2s ease !important;
         display: inline-flex !important;
@@ -224,8 +222,9 @@ st.markdown("""
     div[data-testid="column"] button[kind="secondary"]:hover {
         border-color: #0284c7 !important;
         color: #0284c7 !important;
-        background: #f8fafc !important;
+        background: #f0f9ff !important;
         transform: translateY(-1px) !important;
+        box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15) !important;
     }
 
     /* Clean Lucide SVG Icons for Navigation Buttons via CSS */
@@ -301,40 +300,41 @@ st.markdown("""
     }
     div[data-testid="stTextInput"] input {
         background: #ffffff !important;
-        border: 1px solid #cbd5e1 !important;
+        border: 2px solid #64748b !important;
         color: #0f172a !important;
-        font-size: 15px !important;
-        font-weight: 500 !important;
+        font-size: 15.5px !important;
+        font-weight: 600 !important;
         border-radius: 12px !important;
-        padding: 14px 18px !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
+        padding: 14px 20px !important;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08) !important;
         transition: all 0.2s ease !important;
     }
     div[data-testid="stTextInput"] input:focus {
         border-color: #0284c7 !important;
-        box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.18) !important;
+        box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.25) !important;
     }
     div[data-testid="stTextInput"] input::placeholder {
-        color: #94a3b8 !important;
-        font-weight: 400 !important;
+        color: #64748b !important;
+        font-weight: 500 !important;
     }
     div[data-testid="stFormSubmitButton"] button {
-        background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%) !important;
+        background: linear-gradient(135deg, #0284c7 0%, #1d4ed8 100%) !important;
         color: #ffffff !important;
-        border: none !important;
+        border: 2px solid #0284c7 !important;
         border-radius: 12px !important;
-        font-weight: 700 !important;
-        font-size: 14px !important;
+        font-weight: 800 !important;
+        font-size: 15px !important;
         padding: 13px 26px !important;
-        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35) !important;
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4) !important;
         transition: all 0.2s ease !important;
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
+        letter-spacing: 0.2px !important;
     }
     div[data-testid="stFormSubmitButton"] button:hover {
         transform: translateY(-1px) !important;
-        box-shadow: 0 6px 20px rgba(2, 132, 199, 0.48) !important;
+        box-shadow: 0 6px 22px rgba(2, 132, 199, 0.55) !important;
     }
     div[data-testid="stFormSubmitButton"] button::before {
         content: "";
@@ -349,96 +349,99 @@ st.markdown("""
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='15' height='15' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolygon points='13 2 3 14 12 14 11 22 21 10 12 10 13 2'/%3E%3C/svg%3E");
     }
 
-    /* 6. Prompt Chip Buttons */
+    /* 6. High-Contrast Prompt Action Chips */
     div[data-testid="stHorizontalBlock"] .stButton button {
         background: #ffffff !important;
-        border: 1px solid #e2e8f0 !important;
-        color: #334155 !important;
+        border: 2px solid #94a3b8 !important;
+        color: #0f172a !important;
         border-radius: 10px !important;
-        font-size: 12.5px !important;
-        font-weight: 600 !important;
-        padding: 9px 14px !important;
-        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
-        transition: all 0.15s ease !important;
+        font-size: 13.5px !important;
+        font-weight: 700 !important;
+        padding: 10px 16px !important;
+        box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08) !important;
+        transition: all 0.2s ease !important;
         display: inline-flex !important;
         align-items: center !important;
         justify-content: center !important;
+        width: 100% !important;
     }
     div[data-testid="stHorizontalBlock"] .stButton button:hover {
         border-color: #0284c7 !important;
         color: #0284c7 !important;
         background: #f0f9ff !important;
-        transform: translateY(-1px) !important;
+        transform: translateY(-2px) !important;
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.22) !important;
     }
-    button[key="chip_btn_trend"]::before {
-        content: "";
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        margin-right: 6px;
-        vertical-align: -2px;
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: contain;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230284c7' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='23 6 13.5 15.5 8.5 10.5 1 18'/%3E%3Cpolyline points='17 6 23 6 23 12'/%3E%3C/svg%3E");
+    /* Distinct colored accent borders for prompt action chips */
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(1) .stButton button {
+        border-left: 5px solid #0284c7 !important;
     }
-    button[key="chip_btn_channel"]::before {
-        content: "";
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        margin-right: 6px;
-        vertical-align: -2px;
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: contain;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236366f1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='20' x2='18' y2='10'/%3E%3Cline x1='12' y1='20' x2='12' y2='4'/%3E%3Cline x1='6' y1='20' x2='6' y2='14'/%3E%3C/svg%3E");
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(2) .stButton button {
+        border-left: 5px solid #6366f1 !important;
     }
-    button[key="chip_btn_cust"]::before {
-        content: "";
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        margin-right: 6px;
-        vertical-align: -2px;
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: contain;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230f766e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2'/%3E%3Ccircle cx='9' cy='7' r='4'/%3E%3Cpath d='M23 21v-2a4 4 0 0 0-3-3.87'/%3E%3Cpath d='M16 3.13a4 4 0 0 1 0 7.75'/%3E%3C/svg%3E");
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(3) .stButton button {
+        border-left: 5px solid #0d9488 !important;
     }
-    button[key="chip_btn_attack"]::before {
-        content: "";
-        display: inline-block;
-        width: 14px;
-        height: 14px;
-        margin-right: 6px;
-        vertical-align: -2px;
-        background-repeat: no-repeat;
-        background-position: center;
-        background-size: contain;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23ef4444' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/%3E%3Cline x1='12' y1='8' x2='12' y2='12'/%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'/%3E%3C/svg%3E");
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"]:nth-child(4) .stButton button {
+        border-left: 5px solid #ef4444 !important;
+    }
+
+    /* Enterprise Question Explorer Expander */
+    div[data-testid="stExpander"] {
+        background: #ffffff !important;
+        border: 2px solid #94a3b8 !important;
+        border-radius: 12px !important;
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06) !important;
+        margin-top: 14px !important;
+        margin-bottom: 20px !important;
+        overflow: hidden !important;
+        transition: all 0.2s ease !important;
+    }
+    div[data-testid="stExpander"]:hover {
+        border-color: #0284c7 !important;
+        box-shadow: 0 4px 14px rgba(2, 132, 199, 0.15) !important;
+    }
+    div[data-testid="stExpander"] summary {
+        padding: 14px 20px !important;
+        font-weight: 700 !important;
+        font-size: 14.5px !important;
+        color: #0f172a !important;
+        background: #ffffff !important;
+    }
+    div[data-testid="stExpander"] summary:hover {
+        color: #0284c7 !important;
+        background: #f8fafc !important;
+    }
+    div[data-testid="stExpander"] summary svg {
+        stroke: #0284c7 !important;
+        stroke-width: 2.5 !important;
+    }
+    div[data-testid="stExpander"] div[data-testid="stExpanderDetails"] {
+        background: #f8fafc !important;
+        border-top: 1.5px solid #cbd5e1 !important;
+        padding: 18px 20px !important;
     }
 
     /* 7. SaaS KPI Summary Cards */
     .saas-kpi-card {
         background: #ffffff;
-        border: 1px solid #e2e8f0;
+        border: 1.5px solid #cbd5e1;
         border-radius: 14px;
         padding: 20px 22px;
-        box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 4px 12px rgba(15, 23, 42, 0.02);
+        box-shadow: 0 2px 8px rgba(15, 23, 42, 0.05);
         transition: all 0.2s ease;
         position: relative;
         overflow: hidden;
     }
     .saas-kpi-card:hover {
-        border-color: #cbd5e1;
-        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.07);
+        border-color: #94a3b8;
+        box-shadow: 0 6px 18px rgba(15, 23, 42, 0.09);
         transform: translateY(-2px);
     }
-    .saas-kpi-blue { border-top: 3.5px solid #0284c7; }
-    .saas-kpi-indigo { border-top: 3.5px solid #6366f1; }
-    .saas-kpi-emerald { border-top: 3.5px solid #10b981; }
-    .saas-kpi-rose { border-top: 3.5px solid #ef4444; }
+    .saas-kpi-blue { border-top: 4px solid #0284c7; }
+    .saas-kpi-indigo { border-top: 4px solid #6366f1; }
+    .saas-kpi-emerald { border-top: 4px solid #10b981; }
+    .saas-kpi-rose { border-top: 4px solid #ef4444; }
     .saas-kpi-top {
         display: flex;
         justify-content: space-between;
@@ -491,14 +494,14 @@ st.markdown("""
 
     /* 8. AI Copilot Executive Insights Card */
     .saas-copilot-card {
-        background: linear-gradient(135deg, #f8fafc 0%, #f0f9ff 100%);
-        border: 1px solid #bae6fd;
-        border-left: 4px solid #0284c7;
+        background: #ffffff;
+        border: 1.5px solid #38bdf8;
+        border-left: 5px solid #0284c7;
         border-radius: 14px;
-        padding: 18px 22px;
+        padding: 20px 24px;
         margin-top: 18px;
         margin-bottom: 20px;
-        box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+        box-shadow: 0 4px 16px rgba(2, 132, 199, 0.08);
     }
     .saas-copilot-header {
         display: flex;
@@ -510,95 +513,95 @@ st.markdown("""
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        font-size: 12.5px;
+        font-size: 13px;
         font-weight: 800;
         text-transform: uppercase;
         color: #0284c7;
         letter-spacing: 0.6px;
     }
     .saas-copilot-tag {
-        font-size: 9.5px;
-        font-weight: 700;
+        font-size: 10px;
+        font-weight: 800;
         background: #e0f2fe;
         color: #0284c7;
         border: 1px solid #bae6fd;
-        padding: 2px 7px;
-        border-radius: 5px;
-        letter-spacing: 0.4px;
+        padding: 2px 8px;
+        border-radius: 6px;
+        letter-spacing: 0.5px;
     }
     .saas-copilot-query-pill {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+        border: 1.5px solid #cbd5e1;
         border-radius: 8px;
-        padding: 4px 10px;
-        margin-bottom: 12px;
-        font-size: 12px;
-        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.03);
+        padding: 6px 12px;
+        margin-bottom: 14px;
+        font-size: 13px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
     }
     .saas-copilot-query-label {
-        font-size: 10px;
+        font-size: 10.5px;
         font-weight: 800;
         color: #0369a1;
         background: #e0f2fe;
-        padding: 2px 6px;
+        padding: 2px 7px;
         border-radius: 4px;
         letter-spacing: 0.5px;
     }
     .saas-copilot-query-text {
-        font-weight: 600;
-        color: #1e293b;
-        font-style: italic;
+        font-weight: 700;
+        color: #0f172a;
+        font-style: normal;
     }
     .saas-copilot-direct-answer-box {
-        background: #ffffff;
-        border: 1px solid #bae6fd;
+        background: #f0f9ff;
+        border: 1.5px solid #7dd3fc;
         border-radius: 10px;
-        padding: 14px 18px;
-        margin-bottom: 12px;
-        box-shadow: 0 2px 8px rgba(2, 132, 199, 0.05);
+        padding: 16px 20px;
+        margin-bottom: 14px;
+        box-shadow: 0 2px 8px rgba(2, 132, 199, 0.06);
     }
     .saas-copilot-direct-header {
         display: flex;
         align-items: center;
         gap: 8px;
-        margin-bottom: 6px;
+        margin-bottom: 8px;
     }
     .saas-copilot-direct-badge {
-        font-size: 9px;
+        font-size: 9.5px;
         font-weight: 800;
         background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
         color: #ffffff;
-        padding: 2px 7px;
+        padding: 3px 8px;
         border-radius: 4px;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.6px;
     }
     .saas-copilot-direct-label {
-        font-size: 11px;
-        font-weight: 700;
+        font-size: 11.5px;
+        font-weight: 800;
         color: #0369a1;
         text-transform: uppercase;
         letter-spacing: 0.5px;
     }
     .saas-copilot-direct-text {
-        font-size: 14.5px;
+        font-size: 15.5px;
         line-height: 1.6;
-        color: #0f172a;
-        font-weight: 500;
+        color: #0c4a6e;
+        font-weight: 700;
     }
     .saas-copilot-body {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 10px;
     }
     .saas-copilot-bullet {
         display: flex;
         align-items: flex-start;
         gap: 10px;
         font-size: 13.5px;
-        color: #1e293b;
+        color: #0f172a;
         line-height: 1.5;
     }
     .saas-copilot-bullet-icon {
@@ -608,11 +611,14 @@ st.markdown("""
         display: inline-flex;
     }
     .saas-copilot-bullet-text {
-        font-weight: 500;
+        font-weight: 600;
     }
     .saas-highlight-metric {
-        font-weight: 700;
+        font-weight: 800;
         color: #0284c7;
+        background: #e0f2fe;
+        padding: 1px 6px;
+        border-radius: 4px;
         font-family: 'JetBrains Mono', monospace;
     }
 
@@ -1419,7 +1425,7 @@ if active_view in ["AI Query Console", "Ask AI Analytics"]:
             execute_and_update("DROP TABLE customers")
 
     # Categorized Question Explorer & Example Library
-    with st.expander("Explore Verified Enterprise Questions & Security Attacks", expanded=False):
+    with st.expander("Question Explorer: Browse 15+ Verified Enterprise Queries & Security Tests", expanded=False):
         c_cat, c_q, c_act = st.columns([1.5, 3.5, 1])
         with c_cat:
             cat_choice = st.selectbox(
@@ -1478,7 +1484,7 @@ if active_view in ["AI Query Console", "Ask AI Analytics"]:
                 label_visibility="collapsed"
             )
         with c_act:
-            if st.button("Load & Run", key="btn_load_sample_q", use_container_width=True):
+            if st.button("Run Query", key="btn_load_sample_q", use_container_width=True, type="primary"):
                 execute_and_update(sel_sample_q)
 
     # Retrieve response
