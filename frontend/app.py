@@ -1761,7 +1761,7 @@ elif active_view in ["Relational Datasets", "Datasets & Tables"]:
         sample_xlsx_path = "data/sample_retail_inventory_2026.xlsx"
     if not os.path.exists(sample_csv_path):
         sample_csv_path = "data/sample_retail_inventory_2026.csv"
-
+    col_d_sample1, col_d_sample2 = st.columns(2)
     with col_d_sample1:
         if os.path.exists(sample_xlsx_path):
             with open(sample_xlsx_path, "rb") as f_x:
