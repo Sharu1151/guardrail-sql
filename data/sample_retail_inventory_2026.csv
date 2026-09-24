@@ -1,0 +1,32 @@
+Product ID,Product Name,Category,Supplier,Supplier Email,Warehouse,Unit Cost,Unit Price,Stock Quantity,Total Value,Restock Date
+1001,MacBook Pro 16,Laptops,Nordic Component Supply,supply@nordiccomponents.org,Warehouse North (NY),901.78,1267.85,35,31562.3,2026-07-26
+1002,Dell XPS 15,Laptops,Pacific Rim Hardware Ltd,sales@pacificrimhw.com,Warehouse West (CA),763.89,1087.2,114,87083.46,2026-08-24
+1003,Lenovo ThinkPad X1,Laptops,Pacific Rim Hardware Ltd,sales@pacificrimhw.com,Warehouse South (TX),762.05,1062.6,206,156982.3,2026-12-21
+1004,HP Spectre x360,Laptops,Apex Electronics Global,procurement@apex-global.com,Warehouse Central (IL),1372.82,1717.97,63,86487.66,2026-11-27
+1005,Asus ROG Zephyrus,Laptops,Silicon Stream Distribution,orders@siliconstream.io,Warehouse Central (IL),1021.36,1351.54,204,208357.44,2026-03-12
+1006,Acer Swift 3,Laptops,Nordic Component Supply,supply@nordiccomponents.org,Warehouse Central (IL),1213.44,1725.5,149,180802.56,2026-05-09
+1007,Sony WH-1000XM5,Audio,Silicon Stream Distribution,orders@siliconstream.io,Warehouse Central (IL),306.71,457.25,279,85572.09,2026-10-21
+1008,Bose QuietComfort 45,Audio,Silicon Stream Distribution,orders@siliconstream.io,Warehouse Central (IL),145.44,221.19,278,40432.32,2026-03-14
+1009,AirPods Max,Audio,Apex Electronics Global,procurement@apex-global.com,Warehouse Central (IL),131.91,202.99,68,8969.88,2026-10-04
+1010,Sennheiser Momentum 4,Audio,Vanguard Logistics LLC,fulfillment@vanguardlog.com,Warehouse West (CA),283.73,414.94,216,61285.68,2026-04-14
+1011,JBL Charge 5,Audio,Nordic Component Supply,supply@nordiccomponents.org,Warehouse North (NY),311.07,485.62,251,78078.57,2026-02-15
+1012,Shure SM7B,Audio,Vanguard Logistics LLC,fulfillment@vanguardlog.com,Warehouse Central (IL),172.05,244.35,55,9462.75,2026-01-25
+1013,LG UltraFine 4K,Monitors,Apex Electronics Global,procurement@apex-global.com,Warehouse Central (IL),447.44,607.94,77,34452.88,2026-11-19
+1014,Dell UltraSharp 27,Monitors,Apex Electronics Global,procurement@apex-global.com,Warehouse Central (IL),614.5,893.64,275,168987.5,2026-10-07
+1015,Samsung Odyssey G7,Monitors,Silicon Stream Distribution,orders@siliconstream.io,Warehouse North (NY),707.48,1040.0,47,33251.56,2026-07-23
+1016,BenQ DesignVue,Monitors,Vanguard Logistics LLC,fulfillment@vanguardlog.com,Warehouse West (CA),545.65,739.33,49,26736.85,2026-01-03
+1017,ASUS ProArt 32,Monitors,Vanguard Logistics LLC,fulfillment@vanguardlog.com,Warehouse West (CA),606.62,880.91,232,140735.84,2026-07-14
+1018,Logitech MX Master 3S,Accessories,Pacific Rim Hardware Ltd,sales@pacificrimhw.com,Warehouse North (NY),135.15,195.2,193,26083.95,2026-07-17
+1019,Keychron K2 Wireless,Accessories,Nordic Component Supply,supply@nordiccomponents.org,Warehouse North (NY),103.83,183.06,245,25438.35,2026-11-04
+1020,CalDigit TS4 Dock,Accessories,Vanguard Logistics LLC,fulfillment@vanguardlog.com,Warehouse Central (IL),117.82,197.69,80,9425.6,2026-10-13
+1021,Anker 737 PowerBank,Accessories,Apex Electronics Global,procurement@apex-global.com,Warehouse North (NY),160.08,275.57,58,9284.64,2026-04-11
+1022,Apple Magic Trackpad,Accessories,Silicon Stream Distribution,orders@siliconstream.io,Warehouse West (CA),163.89,250.29,239,39169.71,2026-01-25
+1023,iPhone 15 Pro Max,Smartphones,Pacific Rim Hardware Ltd,sales@pacificrimhw.com,Warehouse South (TX),500.31,635.65,273,136584.63,2026-07-06
+1024,Samsung Galaxy S24 Ultra,Smartphones,Pacific Rim Hardware Ltd,sales@pacificrimhw.com,Warehouse North (NY),790.9,1058.61,248,196143.2,2026-12-24
+1025,Google Pixel 8 Pro,Smartphones,Pacific Rim Hardware Ltd,sales@pacificrimhw.com,Warehouse South (TX),631.26,827.97,194,122464.44,2026-01-17
+1026,OnePlus 12,Smartphones,Silicon Stream Distribution,orders@siliconstream.io,Warehouse Central (IL),648.13,868.02,127,82312.51,2026-05-17
+1027,Xiaomi 14 Pro,Smartphones,Apex Electronics Global,procurement@apex-global.com,Warehouse West (CA),865.74,1125.93,68,58870.32,2026-07-05
+1028,Ubiquiti UniFi Dream Router,Networking,Apex Electronics Global,procurement@apex-global.com,Warehouse North (NY),199.06,264.55,186,37025.16,2026-10-06
+1029,Netgear Nighthawk WiFi 6,Networking,Nordic Component Supply,supply@nordiccomponents.org,Warehouse West (CA),371.33,500.38,269,99887.77,2026-06-24
+1030,TP-Link Deco XE75,Networking,Vanguard Logistics LLC,fulfillment@vanguardlog.com,Warehouse Central (IL),444.53,613.35,254,112910.62,2026-01-09
+1031,Cisco Catalyst Switch,Networking,Nordic Component Supply,supply@nordiccomponents.org,Warehouse West (CA),181.55,237.5,162,29411.1,2026-12-27

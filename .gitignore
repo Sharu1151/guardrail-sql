@@ -1,0 +1,35 @@
+# Environment variables & secrets
+.env
+.env.local
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.mypy_cache/
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# Logs
+logs/
+*.log
+
+# Streamlit local credentials
+.streamlit/secrets.toml
+
+# Executables & binaries
+*.exe
+cloudflared.exe
+
+# IDE & Editor artifacts
+.vscode/
+.idea/
+.gemini/
+.tempmediaStorage/
+scratch/
