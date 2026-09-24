@@ -179,8 +179,8 @@ def _get_column_icon_and_type(col_name: str, sample_val: Any, is_masked: bool):
         return SVG_LOCK, "PII HASH", "badge-pii"
     if any(k in c_lower for k in ["date", "month", "year", "time", "day", "quarter"]):
         return SVG_CALENDAR, "DATE", "badge-date"
-    if any(k in c_lower for k in ["revenue", "sales", "price", "budget", "total", "amount", "cost", "income"]):
-        return SVG_TRENDING_UP, "CURRENCY", "badge-currency"
+    if any(k in c_lower for k in ["revenue", "sales", "price", "budget", "cost", "income", "amount", "salary"]) and not any(k in c_lower for k in ["order", "customer", "count", "record", "quantity", "qty", "items", "index", "id"]):
+        return SVG_TRENDING_UP, "₹ RUPEES", "badge-currency"
     if any(k in c_lower for k in ["id", "index", "number", "code", "key"]):
         return SVG_HASH, "INDEX", "badge-index"
     if isinstance(sample_val, (int, float)):
@@ -252,9 +252,9 @@ def render_saas_data_grid(
             # Numeric Formatting (Currency vs Integer vs Float)
             elif isinstance(val, (int, float)) and not pd.isna(val):
                 c_lower = c.lower()
-                is_curr = any(k in c_lower for k in ["revenue", "budget", "total", "sales", "price", "income", "amount", "cost"])
+                is_curr = any(k in c_lower for k in ["revenue", "budget", "sales", "price", "income", "amount", "cost"]) and not any(k in c_lower for k in ["order", "customer", "product", "count", "record", "quantity", "qty", "items", "index", "id", "number"])
                 if is_curr:
-                    formatted_val = f"${float(val):,.2f}"
+                    formatted_val = f"₹{float(val):,.2f}"
                     tds_html.append(f"""<td class="saas-td-num saas-td-currency">{formatted_val}</td>""")
                 elif isinstance(val, int) or float(val).is_integer():
                     tds_html.append(f"""<td class="saas-td-num">{int(val):,}</td>""")
@@ -511,7 +511,7 @@ def render_executive_insights(
     if direct_answer:
         clean_ans = html.escape(re.sub(r'[\U00010000-\U0010ffff]', '', direct_answer).strip())
         clean_ans = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', clean_ans)
-        clean_ans = re.sub(r'(\$[\d,]+(?:\.\d+)?)', r'<span class="saas-highlight-metric">\1</span>', clean_ans)
+        clean_ans = re.sub(r'([₹\$]|Rs\.?\s?)[\d,]+(?:\.\d+)?', r'<span class="saas-highlight-metric">\g<0></span>', clean_ans)
         clean_ans = re.sub(r'(\b\d+(?:\.\d+)?%)', r'<span class="saas-highlight-metric">\1</span>', clean_ans)
 
         direct_answer_html = f"""
@@ -543,8 +543,8 @@ def render_executive_insights(
         clean_item = html.escape(item_clean)
         # Convert markdown **bold** to <strong>bold</strong>
         clean_item = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', clean_item)
-        # Highlight dollar values e.g. $1,234.56
-        clean_item = re.sub(r'(\$[\d,]+(?:\.\d+)?)', r'<span class="saas-highlight-metric">\1</span>', clean_item)
+        # Highlight currency values e.g. ₹1,234.56 or Rs 1,234
+        clean_item = re.sub(r'([₹\$]|Rs\.?\s?)[\d,]+(?:\.\d+)?', r'<span class="saas-highlight-metric">\g<0></span>', clean_item)
         # Highlight percentages e.g. 15.4%
         clean_item = re.sub(r'(\b\d+(?:\.\d+)?%)', r'<span class="saas-highlight-metric">\1</span>', clean_item)
 

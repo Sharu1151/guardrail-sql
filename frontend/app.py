@@ -1509,12 +1509,14 @@ if active_view in ["AI Query Console", "Ask AI Analytics"]:
                 variant="blue"
             ), unsafe_allow_html=True)
         with c2:
-            agg_val = kpis.get("primary_aggregate", "$0.00")
+            agg_val = kpis.get("primary_aggregate", "₹0.00")
             agg_lbl = kpis.get("aggregate_label", "Primary Metric")
+            is_curr_metric = "₹" in str(agg_val) or "Rs" in str(agg_val)
+            sub_title_text = "Auto-Computed Financial Aggregate (INR)" if is_curr_metric else "Auto-Computed Entity Metric"
             st.markdown(render_kpi_card(
                 title=agg_lbl,
                 value=agg_val,
-                subtitle="Auto-Computed Financial Aggregate",
+                subtitle=sub_title_text,
                 icon_type="chart",
                 variant="indigo"
             ), unsafe_allow_html=True)

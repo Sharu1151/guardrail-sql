@@ -40,9 +40,9 @@ class TestEndToEndPipeline(unittest.TestCase):
 
         # 6. KPI Extraction
         kpis = extract_kpi_cards(df_masked, security_status=ast_res["status"])
-        print("\nExtracted KPIs:", kpis)
+        print("\nExtracted KPIs:", str(kpis).encode("ascii", "backslashreplace").decode("ascii"))
         self.assertEqual(kpis["security_status"], "[AST Read-Only OK]")
-        self.assertIn("$", kpis["primary_aggregate"])
+        self.assertTrue(any(sym in kpis["primary_aggregate"] for sym in ["₹", "Rs", "$"]))
 
         # 7. Auto-Generated Visualization
         chart = auto_generate_chart(df_masked)

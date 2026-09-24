@@ -20,33 +20,45 @@ def extract_kpi_cards(df: pd.DataFrame, security_status: str = "[AST Read-Only O
     if df is None or df.empty:
         return {
             "total_records": "0",
-            "primary_aggregate": "$0.00",
+            "primary_aggregate": "₹0.00",
             "security_status": security_status,
             "aggregate_label": "No Data"
         }
 
-    # Find numeric columns
-    numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
+    # Find numeric columns, avoiding index/id/code columns
+    non_metric_keywords = ["index", "id", "phone", "number", "code", "zip", "year", "month", "day", "date"]
+    numeric_cols = [
+        c for c in df.columns 
+        if pd.api.types.is_numeric_dtype(df[c]) 
+        and not any(k in str(c).lower() for k in non_metric_keywords)
+    ]
+    if not numeric_cols:
+        numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
 
-    primary_aggregate_str = "$0.00"
+    primary_aggregate_str = "₹0.00"
     aggregate_label = "Primary Metric"
 
     if numeric_cols:
         # Prioritize revenue/sales/budget columns over generic count/orders
-        priority_keywords = ["revenue", "line total", "sales", "budget", "income", "total revenue", "total", "amount", "cost"]
+        priority_keywords = ["revenue", "line total", "sales", "budget", "income", "total revenue", "amount", "price", "cost"]
         chosen_col = None
 
         for kw in priority_keywords:
             for col in numeric_cols:
-                # Avoid picking count/order if revenue exists
-                if kw in str(col).lower() and ("order" not in str(col).lower() or kw == "total revenue"):
+                if kw in str(col).lower() and not any(k in str(col).lower() for k in ["order", "customer", "count", "index", "id"]):
                     chosen_col = col
                     break
             if chosen_col:
                 break
 
         if not chosen_col:
-            # Pick the numeric column with highest variation or last numeric column
+            # Look for total / count columns
+            for col in numeric_cols:
+                if any(k in str(col).lower() for k in ["total", "count", "quantity", "qty"]):
+                    chosen_col = col
+                    break
+
+        if not chosen_col:
             chosen_col = numeric_cols[-1]
 
         aggregate_label = str(chosen_col)
@@ -57,17 +69,17 @@ def extract_kpi_cards(df: pd.DataFrame, security_status: str = "[AST Read-Only O
         else:
             val = float(df[chosen_col].sum())
 
-        # Format as currency if financial
-        is_currency = any(kw in str(chosen_col).lower() for kw in ["revenue", "budget", "sales", "total", "price", "income", "cost"])
+        # Format as currency ONLY if truly financial
+        col_lower = str(chosen_col).lower()
+        financial_terms = ["revenue", "budget", "sales", "price", "income", "cost", "salary", "expense", "profit", "line total"]
+        count_terms = ["count", "order", "customer", "product", "record", "quantity", "qty", "items", "index", "id", "population", "people", "number"]
+        is_currency = any(kw in col_lower for kw in financial_terms) and not any(kw in col_lower for kw in count_terms)
+
         if is_currency:
-            if abs(val) >= 1_000_000:
-                primary_aggregate_str = f"${val:,.2f}"
-            else:
-                primary_aggregate_str = f"${val:,.2f}"
+            primary_aggregate_str = f"₹{val:,.2f}"
         else:
-            primary_aggregate_str = f"{val:,.0f}" if val.is_integer() else f"{val:,.2f}"
+            primary_aggregate_str = f"{int(val):,}" if val.is_integer() else f"{val:,.2f}"
     else:
-        # No numeric columns, report record count as aggregate
         primary_aggregate_str = f"{total_records:,} Items"
         aggregate_label = "Total Records"
 
@@ -223,9 +235,15 @@ def generate_executive_insights(df: pd.DataFrame, question: str) -> List[str]:
         total_sum = df[n_col].sum()
         avg_val = df[n_col].mean()
 
-        insights.append(f"**Peak Performance Period**: Highest {n_col} occurred in **{max_row[d_col]}** at **\\${float(max_row[n_col]):,.2f}**.")
-        insights.append(f"**Annual Aggregate & Average**: Cumulative {n_col} reached **\\${float(total_sum):,.2f}** (monthly average: **\\${float(avg_val):,.2f}**).")
-        insights.append(f"**Minimum Activity**: Lowest recorded point was in **{min_row[d_col]}** at **\\${float(min_row[n_col]):,.2f}**.")
+        is_curr = any(kw in str(n_col).lower() for kw in ["revenue", "budget", "sales", "price", "income", "cost", "line total", "amount"]) and not any(kw in str(n_col).lower() for kw in ["count", "order", "customer", "product", "index", "id", "quantity", "qty"])
+        fmt_max = f"₹{float(max_row[n_col]):,.2f}" if is_curr else f"{float(max_row[n_col]):,.0f}"
+        fmt_min = f"₹{float(min_row[n_col]):,.2f}" if is_curr else f"{float(min_row[n_col]):,.0f}"
+        fmt_sum = f"₹{float(total_sum):,.2f}" if is_curr else f"{float(total_sum):,.0f}"
+        fmt_avg = f"₹{float(avg_val):,.2f}" if is_curr else f"{float(avg_val):,.1f}"
+
+        insights.append(f"**Peak Performance Period**: Highest {n_col} occurred in **{max_row[d_col]}** at **{fmt_max}**.")
+        insights.append(f"**Annual Aggregate & Average**: Cumulative {n_col} reached **{fmt_sum}** (monthly average: **{fmt_avg}**).")
+        insights.append(f"**Minimum Activity**: Lowest recorded point was in **{min_row[d_col]}** at **{fmt_min}**.")
         return insights
 
     # Categorical Analysis
@@ -237,7 +255,10 @@ def generate_executive_insights(df: pd.DataFrame, question: str) -> List[str]:
         total_sum = df[n_col].sum()
         pct = (float(top_row[n_col]) / float(total_sum) * 100) if total_sum > 0 else 0
 
-        insights.append(f"**Market Leader**: **{top_row[c_col]}** generated the highest {n_col} with **\\${float(top_row[n_col]):,.2f}** ({pct:.1f}% of total).")
+        is_curr = any(kw in str(n_col).lower() for kw in ["revenue", "budget", "sales", "price", "income", "cost", "line total", "amount"]) and not any(kw in str(n_col).lower() for kw in ["count", "order", "customer", "product", "index", "id", "quantity", "qty"])
+        fmt_top = f"₹{float(top_row[n_col]):,.2f}" if is_curr else f"{float(top_row[n_col]):,.0f}"
+
+        insights.append(f"**Market Leader**: **{top_row[c_col]}** generated the highest {n_col} with **{fmt_top}** ({pct:.1f}% of total).")
         insights.append(f"**Category Breadth**: Analysis encompasses **{len(df)} distinct {c_col} segments**.")
         insights.append(f"**Actionable Strategy**: Prioritize growth investments in top-performing segments while auditing lower tiers.")
         return insights
@@ -250,6 +271,12 @@ def generate_executive_insights(df: pd.DataFrame, question: str) -> List[str]:
         insights.append(f"**Database Schema Discovery**: Identified **{len(df)} active relational tables** in this database.")
         insights.append(f"**Table Inventory**: {', '.join(tbl_names[:8])}.")
         insights.append("**Recommended Next Step**: Select or query specific enterprise tables (e.g. 'Show sales by channel').")
+        return insights
+
+    # Customer count / scalar insight
+    if "customer" in question.lower() and len(df) == 1:
+        insights.append(f"**Customer Directory Overview**: Successfully verified customer accounts in the database.")
+        insights.append(f"**Data Privacy**: All personal contact details (Email, Phone) are dynamically masked with SHA-256 encryption.")
         return insights
 
     # General row count insight
@@ -265,7 +292,7 @@ def generate_direct_answer(df: pd.DataFrame, question: str, kpis: Optional[Dict[
 
     q_lower = question.lower()
     total_records = len(df)
-    primary_agg = kpis.get("primary_aggregate", "$0.00") if kpis else "$0.00"
+    primary_agg = kpis.get("primary_aggregate", "₹0.00") if kpis else "₹0.00"
     agg_label = kpis.get("aggregate_label", "Primary Metric") if kpis else "Primary Metric"
 
     numeric_cols = [c for c in df.columns if pd.api.types.is_numeric_dtype(df[c])]
@@ -279,10 +306,10 @@ def generate_direct_answer(df: pd.DataFrame, question: str, kpis: Optional[Dict[
         max_row = df.loc[df[n_col].idxmax()]
         total_sum = df[n_col].sum()
         avg_val = df[n_col].mean()
-        is_curr = any(k in str(n_col).lower() for k in ["revenue", "sales", "budget", "total", "amount", "price", "income"])
-        fmt_sum = f"${total_sum:,.2f}" if is_curr else f"{total_sum:,.0f}"
-        fmt_max = f"${float(max_row[n_col]):,.2f}" if is_curr else f"{float(max_row[n_col]):,.0f}"
-        fmt_avg = f"${avg_val:,.2f}" if is_curr else f"{avg_val:,.1f}"
+        is_curr = any(k in str(n_col).lower() for k in ["revenue", "sales", "budget", "price", "income", "cost", "line total", "amount"]) and not any(k in str(n_col).lower() for k in ["count", "order", "customer", "quantity", "qty", "items"])
+        fmt_sum = f"₹{total_sum:,.2f}" if is_curr else f"{total_sum:,.0f}"
+        fmt_max = f"₹{float(max_row[n_col]):,.2f}" if is_curr else f"{float(max_row[n_col]):,.0f}"
+        fmt_avg = f"₹{avg_val:,.2f}" if is_curr else f"{avg_val:,.1f}"
         return (
             f"For fiscal period 2026, cumulative {n_col} totaled **{fmt_sum}** across **{total_records} monthly periods** "
             f"(monthly average: **{fmt_avg}**). Performance peaked in **{max_row[d_col]}** at **{fmt_max}**."
@@ -297,20 +324,29 @@ def generate_direct_answer(df: pd.DataFrame, question: str, kpis: Optional[Dict[
         total_sum = df[n_col].sum()
         top_val = float(top_row[n_col])
         pct = (top_val / float(total_sum) * 100) if total_sum > 0 else 0
-        is_curr = any(k in str(n_col).lower() for k in ["revenue", "sales", "budget", "total", "amount", "price"])
-        fmt_top = f"${top_val:,.2f}" if is_curr else f"{top_val:,.0f}"
-        fmt_tot = f"${total_sum:,.2f}" if is_curr else f"{total_sum:,.0f}"
+        is_curr = any(k in str(n_col).lower() for k in ["revenue", "sales", "budget", "price", "income", "cost", "line total", "amount"]) and not any(k in str(n_col).lower() for k in ["count", "order", "customer", "quantity", "qty", "items"])
+        fmt_top = f"₹{top_val:,.2f}" if is_curr else f"{top_val:,.0f}"
+        fmt_tot = f"₹{total_sum:,.2f}" if is_curr else f"{total_sum:,.0f}"
         return (
             f"Across **{len(df)} {c_col} segments**, **{top_row[c_col]}** generated the highest volume with **{fmt_top}** "
             f"({pct:.1f}% market share of the **{fmt_tot}** cumulative total)."
         )
 
-    # 3. Single row or scalar (e.g. Budget of Product 12, or record count)
+    # 3. Single row or scalar (e.g. Total Customers, Budget of Product 12, or record count)
     if total_records == 1:
         if numeric_cols:
             col_name = numeric_cols[0]
-            val = df[col_name].iloc[0]
-            fmt_v = f"${float(val):,.2f}" if any(k in col_name.lower() for k in ["budget", "revenue", "price", "sales"]) else f"{val:,}"
+            val = float(df[col_name].iloc[0])
+            is_col_curr = any(k in col_name.lower() for k in ["budget", "revenue", "price", "sales", "cost", "income", "amount", "line total"]) and not any(k in col_name.lower() for k in ["count", "order", "customer", "product", "index", "id", "quantity", "qty", "items"])
+            fmt_v = f"₹{val:,.2f}" if is_col_curr else f"{int(val):,}"
+
+            if "customer" in q_lower and any(w in q_lower for w in ["total", "count", "how many", "number of"]):
+                return f"There are currently **{int(val):,} verified customer accounts** in the enterprise database."
+            if "product" in q_lower and any(w in q_lower for w in ["total", "count", "how many", "number of"]) and "budget" not in q_lower:
+                return f"There are currently **{int(val):,} product lines** registered in the database catalog."
+            if "order" in q_lower and any(w in q_lower for w in ["total", "count", "how many", "number of"]) and "revenue" not in q_lower:
+                return f"There are currently **{int(val):,} sales orders** recorded in the enterprise database."
+
             other_cols = [c for c in df.columns if c != col_name]
             subj = f"for **{df[other_cols[0]].iloc[0]}**" if other_cols else ""
             return f"The recorded **{col_name}** {subj} is **{fmt_v}**."

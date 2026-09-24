@@ -62,16 +62,24 @@ def synthesize_fallback_sql(
     q = question.lower().strip()
 
     # Dynamic Custom Imported Table Detection (Excel/CSV ingested tables)
+    CORE_TABLES = {"sales_order", "customers", "products", "budgets_2017", "regions", "state_regions"}
     if schema and "tables" in schema:
         for tbl_name, tbl_info in schema["tables"].items():
+            if tbl_name.lower() in CORE_TABLES:
+                continue
+
             clean_tbl = tbl_name.lower().replace("_", " ").strip()
-            # If the question references this table name and it's not the default sales_order
-            if (clean_tbl in q or tbl_name.lower() in q) and clean_tbl not in ["sales order", "order"]:
+            if clean_tbl in q or tbl_name.lower() in q:
                 cols = tbl_info.get("columns", [])
                 col_names = [c.get("name") for c in cols]
-                num_cols = [c.get("name") for c in cols if any(t in str(c.get("type", "")).lower() for t in ["int", "float", "numeric", "decimal", "real", "double"])]
+                # Filter out ID, Index, Phone, Year, Date from numeric measurement columns
+                num_cols = [
+                    c.get("name") for c in cols 
+                    if any(t in str(c.get("type", "")).lower() for t in ["int", "float", "numeric", "decimal", "real", "double"])
+                    and not any(k in str(c.get("name", "")).lower() for k in ["index", "id", "phone", "zip", "code", "year", "date"])
+                ]
 
-                if "count" in q or "how many" in q:
+                if "count" in q or "how many" in q or "total " + clean_tbl in q:
                     return f'SELECT COUNT(*) AS "Total Records" FROM "{tbl_name}"'
 
                 if num_cols and any(w in q for w in ["by", "per", "group", "breakdown", "category"]):
@@ -186,13 +194,22 @@ def synthesize_fallback_sql(
                 ORDER BY Revenue DESC
             """.strip()
 
-    # Customer count
-    if "how many customer" in q or "customer count" in q:
-        return 'SELECT COUNT(*) AS "Total Customers" FROM customers'
+    # Customer count (e.g. "total customers", "how many customers", "customer count", "count of customers")
+    if "customer" in q and any(w in q for w in ["count", "total", "how many", "number of", "how much", "all"]):
+        if not any(w in q for w in ["list", "show", "details", "email", "phone"]):
+            return 'SELECT COUNT(*) AS "Total Customers" FROM customers'
 
     # Customer list with PII
-    if "customer" in q and ("list" in q or "show" in q or "details" in q or "email" in q):
+    if "customer" in q and ("list" in q or "show" in q or "details" in q or "email" in q or "directory" in q):
         return 'SELECT "Customer Index", "Customer Names", "Email", "Phone Number" FROM customers LIMIT 50'
+
+    # Product count (e.g. "total products", "how many products")
+    if "product" in q and any(w in q for w in ["count", "total", "how many", "number of"]) and not any(w in q for w in ["budget", "list", "show"]):
+        return 'SELECT COUNT(*) AS "Total Products" FROM products'
+
+    # Order count (e.g. "total orders", "how many orders")
+    if "order" in q and any(w in q for w in ["count", "total", "how many", "number of"]) and not any(w in q for w in ["revenue", "trend", "month", "sales", "channel", "line total"]):
+        return 'SELECT COUNT(*) AS "Total Orders" FROM sales_order'
 
     # Budget of Product 12
     if "budget" in q and "12" in q:
