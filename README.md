@@ -62,7 +62,7 @@ An enterprise-ready **Guardrailed Text-to-SQL Analytics Platform** with an AST-b
 - Prevents resource exhaustion and runaway Cartesian joins over 1,000,000+ rows.
 
 ### 3. Dynamic PII Masking (`backend/security/pii_masker.py`)
-- Automatically detects sensitive columns (`email`, `phone`, `contact`, `ssn`).
+- Automatically detects sensitive columns (`email`, `phone`, `contact`, `- ssn`).
 - Dynamically applies cryptographic SHA-256 hashing to sensitive records.
 
 ### 4. Enterprise Dual-Engine Database (`backend/database/`)
