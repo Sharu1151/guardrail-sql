@@ -6,9 +6,12 @@ Manages the complete pipeline: Natural Language -> LLM SQL -> SQLGlot AST Firewa
 """
 
 import os
+import re
 from typing import Optional, List, Dict, Any
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.requests import Request
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
@@ -54,6 +57,18 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+class NormalizeSlashesMiddleware(BaseHTTPMiddleware):
+    """Normalize redundant slashes like //api/health to /api/health."""
+    async def dispatch(self, request: Request, call_next):
+        path = request.scope.get("path", "")
+        if "//" in path:
+            request.scope["path"] = re.sub(r"/+", "/", path)
+        return await call_next(request)
+
+
+app.add_middleware(NormalizeSlashesMiddleware)
 
 
 class QueryRequest(BaseModel):

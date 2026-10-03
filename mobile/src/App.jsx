@@ -84,9 +84,10 @@ const MOCK_PRESETS = {
 export default function App() {
   const [activeTab, setActiveTab] = useState('query');
 
-  const publicCloudUrl = 'https://cos-leon-limitation-philips.trycloudflare.com';
+  const publicCloudUrl = 'https://guardrail-sql-api.onrender.com';
   const savedUrl = typeof window !== 'undefined' ? localStorage.getItem('sql_guard_api_url') : null;
-  const initialUrl = publicCloudUrl;
+  const cleanSaved = savedUrl ? savedUrl.trim().replace(/\/+$/, '') : null;
+  const initialUrl = (cleanSaved && !cleanSaved.includes('trycloudflare.com')) ? cleanSaved : publicCloudUrl;
 
   const [apiUrl, setApiUrl] = useState(initialUrl);
   const [isOnline, setIsOnline] = useState(false);
@@ -108,20 +109,23 @@ export default function App() {
   const [schemaData, setSchemaData] = useState(null);
   const [testStatus, setTestStatus] = useState(null);
 
-  // Auto-discovery: checks candidates (Cloudflare Global HTTPS, Wi-Fi LAN IP, Localhost)
+  // Auto-discovery: checks candidates (Render 24/7 Global Cloud, Wi-Fi LAN IP, Localhost)
   const autoDiscoverBackend = async () => {
-    const candidates = [
+    const rawCandidates = [
+      apiUrl,
       publicCloudUrl,
       'http://10.65.140.42:8000',
-      'http://localhost:8000',
-      apiUrl
+      'http://localhost:8000'
     ];
+    const candidates = rawCandidates
+      .filter(Boolean)
+      .map(u => u.trim().replace(/\/+$/, ''))
+      .filter((u, i, arr) => arr.indexOf(u) === i && !u.includes('trycloudflare.com'));
 
     for (const url of candidates) {
-      if (!url) continue;
       try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
         const res = await fetch(`${url}/api/health`, { signal: controller.signal });
         clearTimeout(timeoutId);
 
@@ -175,12 +179,18 @@ export default function App() {
     return () => clearInterval(interval);
   }, []);
 
-  const handleTestConnection = async (testUrl) => {
+  const handleTestConnection = async (rawUrl) => {
+    const testUrl = (rawUrl || '').trim().replace(/\/+$/, '');
     setTestStatus({ success: false, message: 'Connecting to backend...' });
     try {
-      const res = await fetch(`${testUrl}/api/health`);
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      const res = await fetch(`${testUrl}/api/health`, { signal: controller.signal });
+      clearTimeout(timeoutId);
+
       if (res.ok) {
-        setTestStatus({ success: true, message: 'Connected successfully to FastAPI backend!' });
+        setTestStatus({ success: true, message: 'Connected successfully to 24/7 Cloud backend!' });
+        setApiUrl(testUrl);
         setIsOnline(true);
         localStorage.setItem('sql_guard_api_url', testUrl);
         loadAudit(testUrl);
@@ -191,7 +201,7 @@ export default function App() {
     } catch {
       setTestStatus({ 
         success: false, 
-        message: 'Could not reach server. Verify your phone and PC are on the same Wi-Fi.' 
+        message: 'Could not reach server. Verify the URL or check Render deployment status.' 
       });
     }
   };

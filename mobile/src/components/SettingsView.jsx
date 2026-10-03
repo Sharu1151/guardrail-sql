@@ -68,7 +68,7 @@ export default function SettingsView({
             className="text-input"
             value={localUrl}
             onChange={(e) => setLocalUrl(e.target.value)}
-            placeholder="http://localhost:8000"
+            placeholder="https://guardrail-sql-api.onrender.com"
           />
 
           <div style={{ display: 'flex', gap: '8px' }}>
@@ -76,11 +76,26 @@ export default function SettingsView({
               className="send-btn"
               style={{ flex: 1, height: '36px', fontSize: '0.8rem' }}
               onClick={() => {
-                setApiUrl(localUrl);
-                onTestConnection(localUrl);
+                const clean = (localUrl || '').trim().replace(/\/+$/, '');
+                setLocalUrl(clean);
+                setApiUrl(clean);
+                onTestConnection(clean);
               }}
             >
               Save & Test Connection
+            </button>
+            <button
+              className="action-btn"
+              style={{ padding: '0 12px', height: '36px', fontSize: '0.75rem' }}
+              onClick={() => {
+                const defaultCloud = 'https://guardrail-sql-api.onrender.com';
+                setLocalUrl(defaultCloud);
+                setApiUrl(defaultCloud);
+                onTestConnection(defaultCloud);
+              }}
+              title="Reset to 24/7 Cloud URL"
+            >
+              Reset Cloud
             </button>
           </div>
 
