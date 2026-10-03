@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: guardrail-sql-api
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: SQLITE_DB_PATH
+        value: data/sales_data.db
+      - key: PII_MASKING_ENABLED
+        value: "true"
+      - key: MAX_QUERY_ROWS
+        value: "1000"

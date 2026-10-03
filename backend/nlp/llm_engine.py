@@ -261,7 +261,7 @@ def generate_sql_query(
     Returns:
         {"sql": str, "source": "gemini" | "synthesizer", "model": str}
     """
-    key = api_key or os.getenv("GOOGLE_API_KEY")
+    key = api_key or os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY")
 
     if key and key.strip() and key != "your_gemini_api_key_here":
         try:

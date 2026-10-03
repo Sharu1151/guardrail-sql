@@ -82,6 +82,23 @@ class QueryResponse(BaseModel):
     error: Optional[str] = None
 
 
+@app.get("/")
+def root():
+    """Root endpoint for status check and API documentation link."""
+    return {
+        "status": "online",
+        "service": "SQL Guard API",
+        "docs": "/docs",
+        "health": "/api/health"
+    }
+
+
+@app.get("/health")
+def simple_health():
+    """Simple health probe for cloud deployers."""
+    return {"status": "ok"}
+
+
 @app.get("/api/health")
 def health_endpoint():
     """System health check and database connectivity status."""
