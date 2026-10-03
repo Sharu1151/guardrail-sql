@@ -1,0 +1,8 @@
+{
+  "appId": "com.sqlguard.mobile",
+  "appName": "SQL Guard",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

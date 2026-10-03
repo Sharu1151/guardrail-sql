@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="50%" stop-color="#1E1B4B" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="50%" stop-color="#8B5CF6" />
+      <stop offset="100%" stop-color="#EC4899" />
+    </linearGradient>
+    <linearGradient id="accentGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#818CF8" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  
+  <!-- Rounded App Icon Background -->
+  <rect width="512" height="512" rx="112" fill="url(#bgGrad)" />
+  <rect width="504" height="504" x="4" y="4" rx="108" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="2" />
+
+  <!-- Glowing Shield Shape -->
+  <path d="M256 90 L390 146 C390 260 330 354 256 406 C182 354 122 260 122 146 Z"
+        fill="url(#shieldGrad)" opacity="0.9" filter="url(#glow)" />
+        
+  <!-- Database Disks Inside Shield -->
+  <!-- Top Cylinder -->
+  <ellipse cx="256" cy="190" rx="70" ry="24" fill="#E0E7FF" />
+  <path d="M186 190 v30 c0 13.2 31.3 24 70 24 s70 -10.8 70 -24 v-30 Z" fill="#C7D2FE" />
+  
+  <!-- Middle Cylinder -->
+  <path d="M186 235 v30 c0 13.2 31.3 24 70 24 s70 -10.8 70 -24 v-30 Z" fill="#A5B4FC" />
+  
+  <!-- Bottom Cylinder -->
+  <path d="M186 280 v30 c0 13.2 31.3 24 70 24 s70 -10.8 70 -24 v-30 Z" fill="#818CF8" />
+
+  <!-- Code / SQL Prompt Symbol < / > -->
+  <circle cx="256" cy="360" r="32" fill="#0F172A" stroke="#38BDF8" stroke-width="4" />
+  <path d="M246 352 L238 360 L246 368 M266 352 L274 360 L266 368" 
+        stroke="#38BDF8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+</svg>
