@@ -7,6 +7,8 @@ and executive AI business intelligence. Zero emojis; 100% SVG and clean typograp
 """
 
 import os
+import re
+import json
 import html
 import time
 import requests
@@ -1255,7 +1257,7 @@ with st.sidebar:
         </div>
         <div>
             <div style="font-weight: 800; font-size: 14px; color: #0f172a;">Guardrail SQL</div>
-            <div style="font-size: 11px; color: #64748b; font-weight: 500;">Workspace Settings</div>
+            <div style="font-size: 11px; color: #64748b; font-weight: 500;">Enterprise Security Edition</div>
         </div>
     </div>
     """), unsafe_allow_html=True)
@@ -1344,6 +1346,21 @@ with st.sidebar:
     for i, ex in enumerate(sidebar_examples):
         if st.button(ex, key=f"side_ex_{i}", use_container_width=True):
             execute_and_update(ex)
+
+    st.markdown("---")
+    st.markdown("#### 📱 Mobile App (Android APK)")
+    apk_file_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "SQLGuard-Mobile.apk")
+    if os.path.exists(apk_file_path):
+        with open(apk_file_path, "rb") as fp:
+            st.download_button(
+                label="⬇️ Download Android App (SQLGuard-Mobile.apk)",
+                data=fp,
+                file_name="SQLGuard-Mobile.apk",
+                mime="application/vnd.android.package-archive",
+                use_container_width=True,
+                help="Standalone Android application with native voice search"
+            )
+        st.caption("Native Capacitor APK for Android phones & tablets")
 
 
 # -------------------------------------------------------------
@@ -1665,41 +1682,6 @@ if active_view in ["AI Query Console", "Ask AI Analytics"]:
                     </div>
                     """), unsafe_allow_html=True)
 
-                    # Web Speech Readout with SVG icon
-                    clean_expl = expl_text.replace("'", "\\'").replace('"', '\\"').replace("\n", " ")
-                    components.html(f"""
-                    <button id="speak-btn" style="
-                        background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
-                        color: white;
-                        border: none;
-                        padding: 8px 16px;
-                        border-radius: 8px;
-                        font-size: 12.5px;
-                        font-weight: 600;
-                        cursor: pointer;
-                        display: inline-flex;
-                        align-items: center;
-                        gap: 7px;
-                        font-family: 'Plus Jakarta Sans', sans-serif;
-                        box-shadow: 0 2px 6px rgba(2,132,199,0.3);
-                        transition: all 0.2s ease;
-                    ">
-                        {SVG_VOLUME}
-                        <span>Read Logic Aloud</span>
-                    </button>
-                    <script>
-                    document.getElementById('speak-btn').onclick = function() {{
-                        if ('speechSynthesis' in window) {{
-                            window.speechSynthesis.cancel();
-                            const u = new SpeechSynthesisUtterance("{clean_expl}");
-                            u.rate = 1.0;
-                            window.speechSynthesis.speak(u);
-                        }} else {{
-                            alert('Browser speech synthesis not supported.');
-                        }}
-                    }};
-                    </script>
-                    """, height=48)
 
                     st.markdown("<br/>**Validated Read-Only SQL:**", unsafe_allow_html=True)
                     st.markdown(f'<div class="code-box">{html.escape(response_data.get("sql", "None"))}</div>', unsafe_allow_html=True)

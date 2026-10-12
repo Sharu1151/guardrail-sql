@@ -6,88 +6,23 @@ import AnalyticsView from './components/AnalyticsView';
 import SecurityGuardView from './components/SecurityGuardView';
 import SchemaView from './components/SchemaView';
 import SettingsView from './components/SettingsView';
+import ImportView from './components/ImportView';
 import ErrorBoundary from './components/ErrorBoundary';
 
-// Pre-defined mock data for offline resilience so the app works directly out of the box
-const MOCK_PRESETS = {
-  "top 5 products by total sales revenue": {
-    success: true,
-    question: "Top 5 products by total sales revenue",
-    sql: "SELECT product_name, SUM(total_amount) AS revenue FROM orders JOIN products ON orders.product_id = products.product_id GROUP BY product_name ORDER BY revenue DESC LIMIT 5;",
-    direct_answer: "The top revenue driver is Cloud Enterprise Suite ($54,200), followed by Database Guard Pro ($41,800) and Analytics Engine ($32,500).",
-    active_engine: "postgres",
-    security: { is_safe: true, reason: "Single read-only SELECT validated by AST compiler." },
-    cost_check: { is_safe: true, estimated_cost: "0.04 ms (Indexed)" },
-    kpis: {
-      total_top_revenue: "$158,400",
-      leading_product: "Cloud Enterprise",
-      growth_mom: "+18.4%",
-      margin_avg: "72%"
-    },
-    chart: {
-      title: "Top Products by Revenue",
-      x_column: "Product",
-      y_column: "Revenue",
-      data: [
-        { Product: "Cloud Enterprise", Revenue: 54200 },
-        { Product: "Database Guard", Revenue: 41800 },
-        { Product: "Analytics Pro", Revenue: 32500 },
-        { Product: "API Firewall", Revenue: 18400 },
-        { Product: "Audit Vault", Revenue: 11500 }
-      ]
-    },
-    columns: ["product_name", "revenue"],
-    pii_masked_columns: [],
-    table_data: [
-      { product_name: "Cloud Enterprise Suite", revenue: "$54,200" },
-      { product_name: "Database Guard Pro", revenue: "$41,800" },
-      { product_name: "Analytics Engine", revenue: "$32,500" },
-      { product_name: "API Firewall Gateway", revenue: "$18,400" },
-      { product_name: "Audit Vault Storage", revenue: "$11,500" }
-    ],
-    executive_insights: [
-      "Enterprise Cloud Suite contributes 34% of overall portfolio revenue.",
-      "High retention noted for security & database infrastructure products.",
-      "Recommended: Bundle Analytics Pro with Database Guard for mid-market upselling."
-    ]
-  },
-  "drop table customers; -- attack simulation": {
-    success: false,
-    question: "DROP TABLE customers; -- attack simulation",
-    sql: "DROP TABLE customers; -- attack simulation",
-    direct_answer: "🚨 SECURITY ALERT: SQLGlot AST Compiler Firewall BLOCKED this query! DDL statements ('DROP', 'ALTER', 'DELETE', 'TRUNCATE') are strictly forbidden.",
-    active_engine: "sqlite",
-    security: {
-      is_safe: false,
-      reason: "AST Firewall Alert: Unauthorized DDL execution statement 'DROP TABLE' detected and rejected."
-    },
-    cost_check: { is_safe: false, estimated_cost: "BLOCKED" },
-    kpis: {
-      attack_type: "SQL Injection",
-      threat_level: "CRITICAL (Neutralized)",
-      firewall_latency: "0.8 ms",
-      pii_exposure: "0 records"
-    },
-    columns: ["status", "attack_vector", "action_taken"],
-    pii_masked_columns: [],
-    table_data: [
-      { status: "BLOCKED", attack_vector: "DROP TABLE DDL", action_taken: "Execution Terminated" }
-    ],
-    executive_insights: [
-      "SQLGlot AST parser intercepted destructive syntax prior to database execution.",
-      "Audit trail counter updated: +1 malicious attempt blocked.",
-      "Database schema integrity remains 100% protected."
-    ]
-  }
-};
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('query');
 
+  const isLocalhost = typeof window !== 'undefined' && (
+    window.location.hostname === 'localhost' || 
+    window.location.hostname === '127.0.0.1'
+  );
   const publicCloudUrl = 'https://guardrail-sql-api.onrender.com';
   const savedUrl = typeof window !== 'undefined' ? localStorage.getItem('sql_guard_api_url') : null;
   const cleanSaved = savedUrl ? savedUrl.trim().replace(/\/+$/, '') : null;
-  const initialUrl = (cleanSaved && !cleanSaved.includes('trycloudflare.com')) ? cleanSaved : publicCloudUrl;
+  const initialUrl = isLocalhost 
+    ? 'http://localhost:8000' 
+    : ((cleanSaved && !cleanSaved.includes('trycloudflare.com')) ? cleanSaved : publicCloudUrl);
 
   const [apiUrl, setApiUrl] = useState(initialUrl);
   const [isOnline, setIsOnline] = useState(false);
@@ -97,6 +32,7 @@ export default function App() {
 
   const [loading, setLoading] = useState(false);
   const [lastResult, setLastResult] = useState(null);
+  const [selectedPrompt, setSelectedPrompt] = useState(null);
   const [error, setError] = useState(null);
 
   const [auditData, setAuditData] = useState({
@@ -109,14 +45,11 @@ export default function App() {
   const [schemaData, setSchemaData] = useState(null);
   const [testStatus, setTestStatus] = useState(null);
 
-  // Auto-discovery: checks candidates (Render 24/7 Global Cloud, Wi-Fi LAN IP, Localhost)
+  // Auto-discovery: prioritizes local backend when running locally, then cloud/lan
   const autoDiscoverBackend = async () => {
-    const rawCandidates = [
-      apiUrl,
-      publicCloudUrl,
-      'http://10.65.140.42:8000',
-      'http://localhost:8000'
-    ];
+    const rawCandidates = isLocalhost
+      ? ['http://localhost:8000', 'http://127.0.0.1:8000', savedUrl, 'http://192.168.0.10:8000', 'http://192.168.0.9:8000', publicCloudUrl]
+      : [savedUrl, 'http://192.168.0.10:8000', 'http://192.168.0.9:8000', 'http://localhost:8000', publicCloudUrl];
     const candidates = rawCandidates
       .filter(Boolean)
       .map(u => u.trim().replace(/\/+$/, ''))
@@ -210,12 +143,9 @@ export default function App() {
     setLoading(true);
     setError(null);
 
-    const normalizedQ = question.trim().toLowerCase();
-
-    // 1. Try Live Backend Execution
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
+      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout for query pipeline
 
       const res = await fetch(`${apiUrl}/api/query`, {
         method: 'POST',
@@ -229,78 +159,36 @@ export default function App() {
       });
       clearTimeout(timeoutId);
 
-      if (res.ok) {
-        const result = await res.json();
-        setLastResult(result);
-        setIsOnline(true);
-        if (result.active_engine) setActiveEngine(result.active_engine);
-        loadAudit(apiUrl);
-        setLoading(false);
-        return;
+      const result = await res.json();
+      if (!res.ok) {
+        throw new Error(result.detail || result.error || `Query request failed with status ${res.status}`);
       }
-    } catch (netErr) {
-      console.warn("Backend call failed or timed out, evaluating fallback...", netErr);
-    }
 
-    // 2. Intelligent Offline Fallback for Presets if backend is offline/sleeping
-    for (const [key, preset] of Object.entries(MOCK_PRESETS)) {
-      if (normalizedQ.includes(key) || key.includes(normalizedQ)) {
-        setTimeout(() => {
-          setLastResult(preset);
-          setLoading(false);
-        }, 500);
-        return;
-      }
-    }
-
-    // 3. Fallback Synthesizer for arbitrary offline questions
-    setTimeout(() => {
-      setLastResult({
-        success: true,
-        question: question,
-        sql: `SELECT * FROM sales_records WHERE query_context = '${question.replace(/'/g, "")}' LIMIT 5;`,
-        direct_answer: `Query processed. (Offline Demo Mode: Connected on Wi-Fi IP ${apiUrl})`,
-        active_engine: activeEngine,
-        security: { is_safe: true, reason: "AST Firewall: SELECT statement approved." },
-        cost_check: { is_safe: true, estimated_cost: "0.05 ms" },
-        kpis: {
-          results_count: "5 records",
-          avg_value: "$4,250",
-          status: "Processed"
-        },
-        chart: {
-          title: "Query Aggregation",
-          x_column: "Category",
-          y_column: "Amount",
-          data: [
-            { Category: "Online Sales", Amount: 24500 },
-            { Category: "In-Store", Amount: 18200 },
-            { Category: "Enterprise", Amount: 31000 }
-          ]
-        },
-        columns: ["id", "category", "amount", "customer_email"],
-        pii_masked_columns: ["customer_email"],
-        table_data: [
-          { id: 101, category: "Enterprise", amount: "$31,000", customer_email: "e3b0c442... [SHA-256]" },
-          { id: 102, category: "Online Sales", amount: "$24,500", customer_email: "4b227777... [SHA-256]" }
-        ],
-        executive_insights: [
-          "Auto-visualization generated for query distribution.",
-          "Dynamic PII masking obfuscated sensitive customer email records."
-        ]
-      });
+      setLastResult(result);
+      setIsOnline(true);
+      if (result.active_engine) setActiveEngine(result.active_engine);
+      loadAudit(apiUrl);
       setLoading(false);
-    }, 600);
+      return;
+    } catch (netErr) {
+      console.error("Backend query execution failed:", netErr);
+      const isAbort = netErr.name === 'AbortError';
+      const msg = isAbort 
+        ? "Query timed out after 20 seconds. Please check backend response."
+        : (netErr.message || `Unable to reach backend server at ${apiUrl}. Please verify the backend service is running.`);
+      setError(msg);
+      setLoading(false);
+    }
   };
 
   const handleSimulateAttack = (attackPrompt) => {
     setActiveTab('query');
-    handleRunQuery(attackPrompt);
+    setSelectedPrompt(attackPrompt);
   };
 
   const handleSelectTablePrompt = (promptText) => {
     setActiveTab('query');
-    handleRunQuery(promptText);
+    setSelectedPrompt(promptText);
   };
 
   return (
@@ -308,7 +196,8 @@ export default function App() {
       <Header 
         isOnline={isOnline} 
         activeEngine={activeEngine} 
-        onOpenSettings={() => setActiveTab('settings')} 
+        onNavigate={(tab) => setActiveTab(tab)}
+        activeTab={activeTab}
       />
 
       <main style={{ flex: 1 }}>
@@ -319,6 +208,8 @@ export default function App() {
               loading={loading}
               lastResult={lastResult}
               error={error}
+              apiUrl={apiUrl}
+              selectedPrompt={selectedPrompt}
             />
           )}
 
@@ -329,11 +220,23 @@ export default function App() {
             />
           )}
 
+          {/* Guardrail accessed via top-right 3-line menu (Point 9) */}
           {activeTab === 'guardrail' && (
             <SecurityGuardView
               auditData={auditData}
               onSimulateAttack={handleSimulateAttack}
               lastResult={lastResult}
+            />
+          )}
+
+          {activeTab === 'import' && (
+            <ImportView 
+              apiUrl={apiUrl}
+              onImportSuccess={() => loadSchema(apiUrl)}
+              onQueryTable={(q) => {
+                setActiveTab('query');
+                handleRunQuery(q);
+              }}
             />
           )}
 

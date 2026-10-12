@@ -1,6 +1,7 @@
 import React from 'react';
 import { BarChart3, TrendingUp, ShieldCheck, DollarSign, Users, Award, Sparkles } from 'lucide-react';
 import MobileChart from './MobileChart';
+import FormattedMarkdown from './FormattedMarkdown';
 
 export default function AnalyticsView({ lastResult, auditData }) {
   // Fallback sample data if no query has been executed yet
@@ -62,11 +63,16 @@ export default function AnalyticsView({ lastResult, auditData }) {
             <Sparkles size={16} color="var(--accent-purple)" />
             AI Executive Insights
           </span>
-          <ul style={{ paddingLeft: '18px', display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '6px' }}>
             {lastResult.executive_insights.map((item, idx) => (
-              <li key={idx}>{item}</li>
+              <div key={idx} className="markdown-bullet-row">
+                <span className="markdown-bullet-dot">•</span>
+                <div className="markdown-bullet-text">
+                  <FormattedMarkdown text={String(item)} />
+                </div>
+              </div>
             ))}
-          </ul>
+          </div>
         </div>
       ) : (
         <div className="mobile-card">

@@ -8,6 +8,38 @@ import React from 'react';
  *  - *italic* -> <em className="ai-italic">italic</em>
  * Strips raw markdown syntax cleanly so text is readable and visually pleasing.
  */
+function parseInlineMarkdown(text) {
+  if (!text) return [];
+  const tokens = [];
+  // Match **bold**, `code`, or *italic*
+  const regex = /(\*\*(?:[^*]+)\*\*|`[^`]+`|\*(?:[^*]+)\*)/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      tokens.push({ type: 'text', content: text.substring(lastIndex, match.index) });
+    }
+    const raw = match[0];
+    if (raw.startsWith('**') && raw.endsWith('**') && raw.length >= 4) {
+      tokens.push({ type: 'bold', content: raw.slice(2, -2) });
+    } else if (raw.startsWith('`') && raw.endsWith('`') && raw.length >= 2) {
+      tokens.push({ type: 'code', content: raw.slice(1, -1) });
+    } else if (raw.startsWith('*') && raw.endsWith('*') && raw.length >= 2) {
+      tokens.push({ type: 'italic', content: raw.slice(1, -1) });
+    } else {
+      tokens.push({ type: 'text', content: raw });
+    }
+    lastIndex = match.index + raw.length;
+  }
+
+  if (lastIndex < text.length) {
+    tokens.push({ type: 'text', content: text.substring(lastIndex) });
+  }
+
+  return tokens;
+}
+
 export default function FormattedMarkdown({ text, className = "" }) {
   if (!text) return null;
 
@@ -31,32 +63,31 @@ export default function FormattedMarkdown({ text, className = "" }) {
             ? trimmed.replace(/^\d+\.\s+/, '') 
             : trimmed;
 
-        // Split by markdown delimiters: **bold**, `code`, *italic*
-        const parts = cleanContent.split(/(\*\*[^*]+\*\*|`[^`]+`|\*[^*]+\*)/g);
+        const tokens = parseInlineMarkdown(cleanContent);
 
-        const renderedLine = parts.map((part, pIdx) => {
-          if (part.startsWith('**') && part.endsWith('**') && part.length >= 4) {
+        const renderedLine = tokens.map((token, tIdx) => {
+          if (token.type === 'bold') {
             return (
-              <strong key={pIdx} className="ai-bold-highlight">
-                {part.slice(2, -2)}
+              <strong key={tIdx} className="ai-bold-highlight">
+                {token.content}
               </strong>
             );
           }
-          if (part.startsWith('`') && part.endsWith('`') && part.length >= 2) {
+          if (token.type === 'code') {
             return (
-              <code key={pIdx} className="ai-code-pill">
-                {part.slice(1, -1)}
+              <code key={tIdx} className="ai-code-pill">
+                {token.content}
               </code>
             );
           }
-          if (part.startsWith('*') && part.endsWith('*') && part.length >= 2) {
+          if (token.type === 'italic') {
             return (
-              <em key={pIdx} className="ai-italic">
-                {part.slice(1, -1)}
+              <em key={tIdx} className="ai-italic">
+                {token.content}
               </em>
             );
           }
-          return <React.Fragment key={pIdx}>{part}</React.Fragment>;
+          return <React.Fragment key={tIdx}>{token.content}</React.Fragment>;
         });
 
         if (isBullet) {

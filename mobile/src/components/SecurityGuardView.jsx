@@ -7,46 +7,47 @@ import {
 export default function SecurityGuardView({ auditData, onSimulateAttack, lastResult }) {
   const [showDossier, setShowDossier] = useState(false);
 
+  // Point 7: White-labeled security layers with clean enterprise descriptions
   const guardLayers = [
     {
       title: "1. AST Compiler Firewall",
       icon: ShieldCheck,
       color: "var(--success)",
-      desc: "Uses SQLGlot to compile SQL into an Abstract Syntax Tree. Blocks DDL/DML attacks (DROP, DELETE, ALTER, INSERT, UNION injection) before execution with zero evasion.",
+      desc: "Compiles incoming SQL into an Abstract Syntax Tree (AST). Strictly blocks DDL/DML destructive statements (DROP, DELETE, ALTER, INSERT, TRUNCATE) before execution.",
       status: "ACTIVE"
     },
     {
       title: "2. EXPLAIN Cost Pre-Check",
       icon: Zap,
       color: "var(--accent-cyan)",
-      desc: "Executes EXPLAIN cost query on PostgreSQL / SQLite to prevent Cartesian denial-of-service and runaway computational load.",
+      desc: "Pre-evaluates computational complexity on PostgreSQL / SQLite to prevent unbounded Cartesian cross-joins and denial-of-service queries.",
       status: "ACTIVE"
     },
     {
       title: "3. Dynamic PII Masking",
       icon: EyeOff,
       color: "var(--warning)",
-      desc: "Detects customer email, credit card, phone, and SSN columns and replaces values with irreversible salted SHA-256 hashes.",
+      desc: "Detects customer email, credit card, phone, and SSN columns and dynamically protects values with irreversible cryptographic hashing.",
       status: "ACTIVE"
     }
   ];
 
   const vivaQuestions = [
     {
-      q: "Why AST parsing instead of Regex?",
-      a: "Regex pattern matching fails against SQL comment bypasses (e.g. `DR/**/OP`), nested subqueries, and dialect nuances. SQLGlot builds a true lexical token graph and enforces strict read-only grammar."
+      q: "Why AST compilation instead of regex filtering?",
+      a: "Regex pattern matching fails against SQL comment evasion (e.g. `DR/**/OP`), nested subqueries, and dialect nuances. The AST compiler firewall builds a true syntax token graph and enforces strict read-only grammar."
     },
     {
       q: "How does EXPLAIN Cost Protection work?",
-      a: "Before running any analytical query, the optimizer asks PostgreSQL for estimated cost units. If a cross-join or unbounded table scan exceeds the threshold, the query is blocked before consuming database memory."
+      a: "Before running any analytical query, the optimizer asks the database engine for estimated computational cost. If an unbounded scan or Cartesian product exceeds safe limits, execution is halted."
     },
     {
-      q: "Is PII Masking reversible?",
-      a: "No. All PII data is transformed using cryptographic salted SHA-256 digests. Analysts can still perform unique counts and joins without ever seeing raw customer contact details."
+      q: "Is PII Data Masking reversible?",
+      a: "No. All PII data is transformed using cryptographic one-way salted digests. Analysts can still perform aggregate counts and grouping without exposing sensitive personal information."
     },
     {
       q: "What is the firewall latency overhead?",
-      a: "AST compilation and validation take under 0.8 ms on average, adding practically zero perceptible latency to query execution."
+      a: "AST compilation and validation take under 0.8 ms on average, adding negligible overhead to query execution."
     }
   ];
 
@@ -86,7 +87,7 @@ export default function SecurityGuardView({ auditData, onSimulateAttack, lastRes
       </div>
 
       {/* Attack Simulator Testbed */}
-      <div className="mobile-card" style={{ borderColor: 'rgba(244, 63, 94, 0.4)', background: 'rgba(244, 63, 94, 0.04)' }}>
+      <div className="mobile-card" style={{ borderColor: 'rgba(244, 63, 94, 0.4)', background: 'rgba(244, 63, 94, 0.04)', gap: '10px' }}>
         <div className="card-title-row">
           <span className="card-title" style={{ color: 'var(--danger)', fontSize: '0.9rem' }}>
             <Flame size={16} />
@@ -94,17 +95,29 @@ export default function SecurityGuardView({ auditData, onSimulateAttack, lastRes
           </span>
         </div>
         <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-          Test the AST firewall live. Click below to inject a dangerous SQL statement and watch the AST parser reject it before reaching the database.
+          Test the AST firewall live. Click below to inject a dangerous SQL statement and verify that the AST parser rejects it before reaching the database.
         </p>
 
-        <button 
-          className="send-btn" 
-          style={{ width: '100%', background: 'linear-gradient(135deg, #E11D48, #9F1239)', fontSize: '0.82rem', fontWeight: 600, gap: '6px' }}
-          onClick={() => onSimulateAttack("DROP TABLE customers; -- attack simulation")}
-        >
-          <ShieldAlert size={16} />
-          Simulate SQL Injection Attack
-        </button>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <button 
+            className="send-btn" 
+            style={{ width: '100%', background: 'linear-gradient(135deg, #E11D48, #9F1239)', fontSize: '0.82rem', fontWeight: 600, gap: '6px' }}
+            onClick={() => onSimulateAttack("DROP TABLE customers; -- attack simulation")}
+          >
+            <ShieldAlert size={16} />
+            Simulate DROP TABLE Attack
+          </button>
+
+          {/* Point 8: Test delete -- revenue attack */}
+          <button 
+            type="button"
+            className="prompt-chip" 
+            style={{ width: '100%', justifyContent: 'center', borderColor: 'rgba(244, 63, 94, 0.4)', color: 'var(--danger)', fontSize: '0.78rem' }}
+            onClick={() => onSimulateAttack("delete -- revenue")}
+          >
+            Test "delete -- revenue" Injection Defense
+          </button>
+        </div>
       </div>
 
       {/* Real-Time Audit Stats */}
@@ -135,7 +148,7 @@ export default function SecurityGuardView({ auditData, onSimulateAttack, lastRes
         </div>
       )}
 
-      {/* Website Parity: Viva Voce & Architecture Dossier */}
+      {/* Viva Voce & Architecture Dossier */}
       <div className="mobile-card">
         <div 
           className="card-title-row" 

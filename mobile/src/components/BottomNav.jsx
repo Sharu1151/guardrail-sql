@@ -1,13 +1,14 @@
 import React from 'react';
-import { MessageSquareText, BarChart3, ShieldCheck, Database, Settings } from 'lucide-react';
+import { MessageSquareText, BarChart3, UploadCloud, Database, Settings } from 'lucide-react';
 
 export default function BottomNav({ activeTab, setActiveTab }) {
+  // Guardrail tab was moved to the top-right 3-line menu (Point 9)
   const tabs = [
     { id: 'query', label: 'Query', icon: MessageSquareText },
     { id: 'analytics', label: 'Insights', icon: BarChart3 },
-    { id: 'guardrail', label: 'Guardrail', icon: ShieldCheck },
+    { id: 'import', label: 'Import', icon: UploadCloud },
     { id: 'schema', label: 'Schema', icon: Database },
-    { id: 'settings', label: 'App / APK', icon: Settings }
+    { id: 'settings', label: 'Settings', icon: Settings }
   ];
 
   return (

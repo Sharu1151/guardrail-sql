@@ -47,7 +47,7 @@ export default function SettingsView({
         </h2>
         <span className="guard-badge safe">
           <Smartphone size={12} />
-          v1.0.4 (Live)
+          Online Ready
         </span>
       </div>
 
@@ -125,7 +125,7 @@ export default function SettingsView({
         <div className="settings-item">
           <div className="settings-info">
             <span className="settings-title">Dynamic PII Masking</span>
-            <span className="settings-subtitle">SHA-256 hash customer emails & sensitive data</span>
+            <span className="settings-subtitle">Cryptographic masking for emails & sensitive personal data</span>
           </div>
           <label className="switch">
             <input 
@@ -176,11 +176,28 @@ export default function SettingsView({
             Open this URL on your phone's browser (Chrome or Safari) and tap <strong>Add to Home Screen</strong>. It installs as a full-screen native-like app with an icon on your home screen!
           </p>
           <button 
-            className="send-btn" 
-            style={{ height: '36px', fontSize: '0.78rem', marginTop: '4px', gap: '6px' }}
+            type="button"
+            className="action-btn" 
+            style={{ 
+              width: '100%', 
+              height: '42px', 
+              fontSize: '0.82rem', 
+              fontWeight: 600,
+              marginTop: '6px', 
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              borderRadius: 'var(--radius-md)',
+              background: 'linear-gradient(135deg, var(--primary), #8B5CF6)',
+              color: '#FFF',
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 4px 14px rgba(99, 102, 241, 0.35)'
+            }}
             onClick={handleInstallPwa}
           >
-            <Download size={14} />
+            <Download size={15} />
             Install to Home Screen
           </button>
         </div>
@@ -189,18 +206,38 @@ export default function SettingsView({
 
         {/* Step 2: Build Android APK */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-          <strong style={{ color: 'var(--text-main)' }}>Method 2: Export as Android APK (Capacitor)</strong>
-          <p style={{ margin: 0, fontSize: '0.75rem' }}>
-            To generate a standalone <code>.apk</code> installer for Android:
-          </p>
-          <div className="sql-box" style={{ fontSize: '0.72rem', padding: '8px' }}>
-            cd mobile<br />
-            npm run build<br />
-            npx cap add android<br />
-            npx cap open android
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <strong style={{ color: 'var(--text-main)' }}>Method 2: Standalone Android APK (.apk)</strong>
           </div>
-          <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>
-            This opens Android Studio where you can click <strong>Build &gt; Build Bundle(s) / APK(s) &gt; Build APK(s)</strong>.
+          <p style={{ margin: 0, fontSize: '0.75rem' }}>
+            A standalone native Android application package built with Capacitor. Includes high-accuracy SQL generation, CSV ingestion, AST Firewall, and Dynamic PII Masking:
+          </p>
+          <a 
+            href="/SQLGuard-Mobile.apk"
+            download="SQLGuard-Mobile.apk"
+            className="action-btn"
+            style={{ 
+              width: '100%', 
+              height: '44px', 
+              fontSize: '0.82rem', 
+              fontWeight: 600,
+              marginTop: '4px', 
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              borderRadius: 'var(--radius-md)',
+              background: 'linear-gradient(135deg, #059669, #10B981)',
+              color: '#FFF',
+              textDecoration: 'none',
+              boxShadow: '0 4px 14px rgba(16, 185, 129, 0.35)'
+            }}
+          >
+            <Download size={16} />
+            Download SQLGuard-Mobile.apk
+          </a>
+          <span style={{ fontSize: '0.72rem', color: 'var(--text-dim)', marginTop: '2px' }}>
+            Binary: <code>text-to-sql/SQLGuard-Mobile.apk</code> | Ready to install directly on Android
           </span>
         </div>
       </div>

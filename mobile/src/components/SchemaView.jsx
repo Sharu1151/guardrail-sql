@@ -77,7 +77,7 @@ export default function SchemaView({ schema, onSelectTablePrompt }) {
       </div>
 
       <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
-        Complete relational data catalog with live row counts, datatypes, and automatic SHA-256 PII column classifications.
+        Complete relational data catalog with live row counts, datatypes, and automatic PII column classifications.
       </p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>

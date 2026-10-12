@@ -5,6 +5,7 @@ Computes the 3 automated summary KPI cards and auto-generates Plotly chart speci
 """
 
 from typing import Dict, Any, List, Optional
+import re
 import pandas as pd
 import numpy as np
 
@@ -276,12 +277,12 @@ def generate_executive_insights(df: pd.DataFrame, question: str) -> List[str]:
     # Customer count / scalar insight
     if "customer" in question.lower() and len(df) == 1:
         insights.append(f"**Customer Directory Overview**: Successfully verified customer accounts in the database.")
-        insights.append(f"**Data Privacy**: All personal contact details (Email, Phone) are dynamically masked with SHA-256 encryption.")
+        insights.append(f"**Data Privacy**: All personal contact details (Email, Phone) are protected with dynamic cryptographic masking.")
         return insights
 
     # General row count insight
     insights.append(f"**Data Coverage**: Query successfully returned **{len(df):,} verified records** from the database.")
-    insights.append("**Data Privacy**: Cryptographic PII masking verified and active on sensitive personal columns.")
+    insights.append("**Data Privacy**: Dynamic cryptographic PII masking verified and active on sensitive personal columns.")
     return insights
 
 
@@ -307,29 +308,65 @@ def generate_direct_answer(df: pd.DataFrame, question: str, kpis: Optional[Dict[
         total_sum = df[n_col].sum()
         avg_val = df[n_col].mean()
         is_curr = any(k in str(n_col).lower() for k in ["revenue", "sales", "budget", "price", "income", "cost", "line total", "amount"]) and not any(k in str(n_col).lower() for k in ["count", "order", "customer", "quantity", "qty", "items"])
-        fmt_sum = f"₹{total_sum:,.2f}" if is_curr else f"{total_sum:,.0f}"
-        fmt_max = f"₹{float(max_row[n_col]):,.2f}" if is_curr else f"{float(max_row[n_col]):,.0f}"
-        fmt_avg = f"₹{avg_val:,.2f}" if is_curr else f"{avg_val:,.1f}"
+        fmt_sum = f"₹{total_sum:,.2f}" if is_curr else (f"{int(total_sum):,}" if float(total_sum).is_integer() else f"{total_sum:,.2f}")
+        fmt_max = f"₹{float(max_row[n_col]):,.2f}" if is_curr else (f"{int(max_row[n_col]):,}" if float(max_row[n_col]).is_integer() else f"{float(max_row[n_col]):,.2f}")
+        fmt_avg = f"₹{avg_val:,.2f}" if is_curr else f"{avg_val:,.2f}"
+
+        year_in_q = re.search(r'\b(20\d\d)\b', q_lower)
+        if year_in_q:
+            time_label = f"For fiscal year {year_in_q.group(1)}"
+        elif len(df) > 0 and d_col:
+            d_vals = [str(x) for x in df[d_col].tolist()]
+            time_label = f"Across the analyzed period ({min(d_vals)} to {max(d_vals)})"
+        else:
+            time_label = "Across the analyzed reporting period"
+
+        metric_name = str(n_col).replace("_", " ")
         return (
-            f"For fiscal period 2026, cumulative {n_col} totaled **{fmt_sum}** across **{total_records} monthly periods** "
-            f"(monthly average: **{fmt_avg}**). Performance peaked in **{max_row[d_col]}** at **{fmt_max}**."
+            f"{time_label}, cumulative {metric_name} totaled **{fmt_sum}** across **{total_records} reporting intervals** "
+            f"(average: **{fmt_avg}**). Performance peaked in **{max_row[d_col]}** at **{fmt_max}**."
         )
 
-    # 2. Categorical / Channel breakdown
+    # 2. Categorical / Customer / Product breakdown
     if cat_cols and numeric_cols:
         c_col = cat_cols[0]
         n_col = numeric_cols[-1]
         sorted_df = df.sort_values(by=n_col, ascending=False)
-        top_row = sorted_df.iloc[0]
         total_sum = df[n_col].sum()
+        metric_label = str(n_col).replace("_", " ")
+
+        is_curr = any(k in str(n_col).lower() for k in ["revenue", "sales", "budget", "price", "income", "cost", "line total", "amount"]) and not any(k in str(n_col).lower() for k in ["count", "order", "customer", "quantity", "qty", "items"])
+        
+        # If small list (<= 5 rows), list all of them clearly with their exact values
+        if 1 < len(sorted_df) <= 5:
+            items = []
+            for i, (_, row) in enumerate(sorted_df.iterrows(), 1):
+                val = float(row[n_col])
+                fmt_v = f"₹{val:,.2f}" if is_curr else (f"{int(val):,}" if val.is_integer() else f"{val:,.2f}")
+                items.append(f"{i}. **{row[c_col]}** ({fmt_v})")
+            return f"The top {len(sorted_df)} results for {metric_label} are: {', '.join(items)}."
+        
+        top_row = sorted_df.iloc[0]
         top_val = float(top_row[n_col])
         pct = (top_val / float(total_sum) * 100) if total_sum > 0 else 0
-        is_curr = any(k in str(n_col).lower() for k in ["revenue", "sales", "budget", "price", "income", "cost", "line total", "amount"]) and not any(k in str(n_col).lower() for k in ["count", "order", "customer", "quantity", "qty", "items"])
-        fmt_top = f"₹{top_val:,.2f}" if is_curr else f"{top_val:,.0f}"
-        fmt_tot = f"₹{total_sum:,.2f}" if is_curr else f"{total_sum:,.0f}"
+        fmt_top = f"₹{top_val:,.2f}" if is_curr else (f"{int(top_val):,}" if top_val.is_integer() else f"{top_val:,.2f}")
+        fmt_tot = f"₹{total_sum:,.2f}" if is_curr else (f"{int(total_sum):,}" if float(total_sum).is_integer() else f"{total_sum:,.2f}")
+
+        if "customer" in q_lower:
+            return (
+                f"The top customer is **{top_row[c_col]}** with {metric_label} of **{fmt_top}** "
+                f"({pct:.1f}% of total {fmt_tot} across {len(df)} returned records)."
+            )
+
+        if "product" in q_lower:
+            return (
+                f"The top product is **{top_row[c_col]}** with {metric_label} of **{fmt_top}** "
+                f"({pct:.1f}% share of the {fmt_tot} cumulative total)."
+            )
+
         return (
-            f"Across **{len(df)} {c_col} segments**, **{top_row[c_col]}** generated the highest volume with **{fmt_top}** "
-            f"({pct:.1f}% market share of the **{fmt_tot}** cumulative total)."
+            f"Across **{len(df)} {c_col} segments**, **{top_row[c_col]}** generated the highest volume with **{fmt_top}** {metric_label} "
+            f"({pct:.1f}% share of the **{fmt_tot}** cumulative total)."
         )
 
     # 3. Single row or scalar (e.g. Total Customers, Budget of Product 12, or record count)
@@ -338,7 +375,7 @@ def generate_direct_answer(df: pd.DataFrame, question: str, kpis: Optional[Dict[
             col_name = numeric_cols[0]
             val = float(df[col_name].iloc[0])
             is_col_curr = any(k in col_name.lower() for k in ["budget", "revenue", "price", "sales", "cost", "income", "amount", "line total"]) and not any(k in col_name.lower() for k in ["count", "order", "customer", "product", "index", "id", "quantity", "qty", "items"])
-            fmt_v = f"₹{val:,.2f}" if is_col_curr else f"{int(val):,}"
+            fmt_v = f"₹{val:,.2f}" if is_col_curr else (f"{int(val):,}" if val.is_integer() else f"{val:,.2f}")
 
             if "customer" in q_lower and any(w in q_lower for w in ["total", "count", "how many", "number of"]):
                 return f"There are currently **{int(val):,} verified customer accounts** in the enterprise database."
@@ -366,7 +403,7 @@ def generate_direct_answer(df: pd.DataFrame, question: str, kpis: Optional[Dict[
     if any(k in q_lower for k in ["customer", "contact", "email", "phone"]):
         return (
             f"Retrieved **{total_records:,} customer profiles** from the database. All sensitive contact details "
-            f"(Email, Phone Number) are protected with dynamic SHA-256 cryptographic hashing."
+            f"(Email, Phone Number) are protected with dynamic cryptographic data masking."
         )
 
     # 6. General fallback
