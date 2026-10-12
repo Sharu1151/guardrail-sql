@@ -14,6 +14,7 @@
    - Direct answers must be grounded in actual returned database records via `generate_ai_direct_answer`.
 2. **UI Constraints**:
    - Keep Read Aloud (text-to-speech) removed.
+   - Keep Import tab removed / hidden from mobile view.
    - Do not display version badges or tags (`v1.0.5`, `v1.1.0`) on mobile headers or settings.
    - Keep Voice Search (microphone input), Hide UI, and Export working.
 3. **Release Structure**:

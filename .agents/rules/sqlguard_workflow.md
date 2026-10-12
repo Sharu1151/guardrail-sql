@@ -23,6 +23,7 @@
 - **Preserve**: Export (CSV/JSON), Hide UI toggle, Voice Input (speech-to-text microphone via Web Speech API).
 - **Remove / Do Not Show**:
   - Read Aloud (text-to-speech) must NOT be shown in the UI.
+  - Import tab must NOT be shown in mobile view.
   - Version tags/badges (`v1.0.5`, `v1.1.0`, etc.) must NOT be displayed on mobile headers or settings. Keep the UI clean.
 
 ## 4. Release & Versioning Workflow

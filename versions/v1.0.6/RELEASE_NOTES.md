@@ -29,6 +29,7 @@
 ### 4. UI Polish & Clean Aesthetics
 - Removed Read Aloud audio buttons and text-to-speech overhead.
 - Removed all version tags and badges (`v1.1.0`, etc.) from mobile Header and Settings screens as requested.
+- Removed / hid the Import tab from mobile view to prevent Android storage sandbox conflicts and keep the bottom navigation focused and responsive.
 - Preserved Voice Search (speech-to-text microphone input), Hide UI toggle, and CSV/JSON export.
 
 ### 5. Automated Verification Suite

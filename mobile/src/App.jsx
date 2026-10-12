@@ -6,7 +6,6 @@ import AnalyticsView from './components/AnalyticsView';
 import SecurityGuardView from './components/SecurityGuardView';
 import SchemaView from './components/SchemaView';
 import SettingsView from './components/SettingsView';
-import ImportView from './components/ImportView';
 import ErrorBoundary from './components/ErrorBoundary';
 
 
@@ -229,16 +228,7 @@ export default function App() {
             />
           )}
 
-          {activeTab === 'import' && (
-            <ImportView 
-              apiUrl={apiUrl}
-              onImportSuccess={() => loadSchema(apiUrl)}
-              onQueryTable={(q) => {
-                setActiveTab('query');
-                handleRunQuery(q);
-              }}
-            />
-          )}
+
 
           {activeTab === 'schema' && (
             <SchemaView
