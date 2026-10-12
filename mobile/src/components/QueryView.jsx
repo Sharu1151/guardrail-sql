@@ -3,7 +3,7 @@ import {
   Send, Mic, MicOff, Copy, Check, ShieldCheck, ShieldAlert, 
   Sparkles, Database, Table, AlertCircle, Download, 
   Layers, ChevronDown, ChevronUp, Compass, ArrowRight,
-  Share2
+  Share2, Cpu, Zap, Loader2
 } from 'lucide-react';
 import MobileChart from './MobileChart';
 import FormattedMarkdown from './FormattedMarkdown';
@@ -85,6 +85,25 @@ export default function QueryView({
   const [voiceNotice, setVoiceNotice] = useState(null);
   const [exportNotice, setExportNotice] = useState(null);
 
+  const LOADER_STAGES = [
+    { title: "Interpreting Query with AI", subtitle: "Analyzing natural language intent via Gemini AI...", icon: Sparkles },
+    { title: "AST Security Guardrail", subtitle: "Verifying read-only safety & AST compiler firewall...", icon: ShieldCheck },
+    { title: "Querying Database Engine", subtitle: "Executing SQL against active sales database...", icon: Database },
+    { title: "Synthesizing Direct Answer", subtitle: "Grounding factual response in live database records...", icon: Layers }
+  ];
+
+  const [loadingStageIndex, setLoadingStageIndex] = useState(0);
+
+  useEffect(() => {
+    if (!loading) {
+      setLoadingStageIndex(0);
+      return;
+    }
+    const interval = setInterval(() => {
+      setLoadingStageIndex((prev) => (prev + 1) % LOADER_STAGES.length);
+    }, 1400);
+    return () => clearInterval(interval);
+  }, [loading]);
 
   // Question Explorer state
   const [showExplorer, setShowExplorer] = useState(false);
@@ -285,11 +304,12 @@ export default function QueryView({
     setTimeout(() => setExportNotice(null), 3500);
   };
 
-  // Only show results when user clicked Submit and input matches submitted query
+  // Only show results when user clicked Submit, input matches submitted query, and not currently loading
   const showResults = Boolean(
     lastResult && 
     submittedQuery && 
-    question.trim().toLowerCase() === submittedQuery.toLowerCase()
+    question.trim().toLowerCase() === submittedQuery.toLowerCase() &&
+    !loading
   );
 
   return (
@@ -423,6 +443,42 @@ export default function QueryView({
             <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Error Processing Query</span>
           </div>
           <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>{error}</p>
+        </div>
+      )}
+
+      {/* Dynamic Animated AI Execution Loader */}
+      {loading && (
+        <div className="query-loader-card">
+          <div className="loader-orbit-wrapper">
+            <div className="loader-glow-halo" />
+            <div className="loader-spinner-ring" />
+            <div className="loader-center-icon">
+              {React.createElement(LOADER_STAGES[loadingStageIndex].icon, {
+                size: 22,
+                className: "loader-pulse-icon",
+                color: "var(--accent-cyan)"
+              })}
+            </div>
+          </div>
+
+          <div className="loader-text-block">
+            <div className="loader-stage-header">
+              <span className="loader-live-dot" />
+              <h3 className="loader-title">{LOADER_STAGES[loadingStageIndex].title}</h3>
+            </div>
+            <p className="loader-subtitle">{LOADER_STAGES[loadingStageIndex].subtitle}</p>
+          </div>
+
+          <div className="loader-progress-bar-container">
+            <div className="loader-progress-bar-fill" />
+          </div>
+
+          {/* Shimmer Skeleton Placeholder */}
+          <div className="loader-shimmer-box">
+            <div className="shimmer-line shimmer-line-long" />
+            <div className="shimmer-line shimmer-line-medium" />
+            <div className="shimmer-line shimmer-line-short" />
+          </div>
         </div>
       )}
 
