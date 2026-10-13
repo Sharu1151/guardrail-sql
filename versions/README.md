@@ -8,7 +8,8 @@ This folder organizes and preserves all build versions of **SQL Guard Mobile**.
 
 | Version | Status | APK Location | Highlights |
 | :--- | :--- | :--- | :--- |
-| **v1.0.6** | **Current (Latest)** | [`v1.0.6/apk-output/SQL_Guard_v1.0.6.apk`](file:///c:/Users/MSI/Desktop/text-to-sql/versions/v1.0.6/apk-output/SQL_Guard_v1.0.6.apk) | **Accurate AI Engine & Grounded Direct Answers**. Removed benchmark bypasses, dynamic schema foreign keys, Gemini direct answer grounding on real DB rows, removed Read Aloud & version tags, 10/10 automated tests passing. |
+| **v1.0.7** | **Current (Latest)** | [`v1.0.7/apk-output/SQL_Guard_v1.0.7.apk`](file:///c:/Users/MSI/Desktop/text-to-sql/versions/v1.0.7/apk-output/SQL_Guard_v1.0.7.apk) | **Lightning-Fast Gemini Engine & Consistent Ranking**. Fast 3–4s Gemini models, standardized singular/plural intent (top customer = top customers), removed Import from drawer, 75s network timeout with live timer. |
+| **v1.0.6** | Archived | [`v1.0.6/apk-output/SQL_Guard_v1.0.6.apk`](file:///c:/Users/MSI/Desktop/text-to-sql/versions/v1.0.6/apk-output/SQL_Guard_v1.0.6.apk) | **Accurate AI Engine & Grounded Direct Answers**. Removed benchmark bypasses, dynamic schema foreign keys, Gemini direct answer grounding on real DB rows, removed Read Aloud & version tags, 10/10 automated tests passing. |
 | **v1.0.5** | Archived | [`v1.0.5/apk-output/SQL_Guard_v1.0.5.apk`](file:///c:/Users/MSI/Desktop/text-to-sql/versions/v1.0.5/apk-output/SQL_Guard_v1.0.5.apk) | **24/7 Cloud Engine on Render**. Default connection to `guardrail-sql-api.onrender.com`. Automatic slash normalization and 1-tap Cloud Reset. |
 | **v1.0.4** | Archived | [`v1.0.4/apk-output/SQL_Guard_v1.0.4.apk`](file:///c:/Users/MSI/Desktop/text-to-sql/versions/v1.0.4/apk-output/SQL_Guard_v1.0.4.apk) | **Clean AI Text & Website Parity**. Markdown bold highlighter, Categorized Question Explorer (18+ queries), CSV/JSON export, AST tree inspector, live row counts, bottom nav padding fix. |
 | **v1.0.3** | Archived | [`v1.0.3/apk-output/SQL_Guard_v1.0.3.apk`](file:///c:/Users/MSI/Desktop/text-to-sql/versions/v1.0.3/apk-output/SQL_Guard_v1.0.3.apk) | Fixed Blank Screen on Query. React ErrorBoundary crash interceptor + defensive chart & KPI parser. |
@@ -55,7 +56,8 @@ versions/
 
 ## 📦 Root APK Shortcuts
 
-- **Latest (v1.0.6)**: [`SQL_Guard.apk`](file:///c:/Users/MSI/Desktop/text-to-sql/SQL_Guard.apk)
+- **Latest (v1.0.7)**: [`SQL_Guard.apk`](file:///c:/Users/MSI/Desktop/text-to-sql/SQL_Guard.apk)
+- **v1.0.7**: [`SQL_Guard_v1.0.7.apk`](file:///c:/Users/MSI/Desktop/text-to-sql/SQL_Guard_v1.0.7.apk)
 - **v1.0.6**: [`SQL_Guard_v1.0.6.apk`](file:///c:/Users/MSI/Desktop/text-to-sql/SQL_Guard_v1.0.6.apk)
 - **v1.0.5**: [`SQL_Guard_v1.0.5.apk`](file:///c:/Users/MSI/Desktop/text-to-sql/SQL_Guard_v1.0.5.apk)
 - **v1.0.4**: [`SQL_Guard_v1.0.4.apk`](file:///c:/Users/MSI/Desktop/text-to-sql/SQL_Guard_v1.0.4.apk)
