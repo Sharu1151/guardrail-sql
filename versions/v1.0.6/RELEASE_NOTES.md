@@ -32,7 +32,13 @@
 - Removed / hid the Import tab from mobile view to prevent Android storage sandbox conflicts and keep the bottom navigation focused and responsive.
 - Preserved Voice Search (speech-to-text microphone input), Hide UI toggle, and CSV/JSON export.
 
-### 5. Automated Verification Suite
+### 5. AI Speed Optimization & Network Timeout Resilience
+- Prioritized high-speed, live Gemini models (`gemini-3.1-flash-lite-preview`, `gemini-3.1-flash-lite`, `gemini-3.6-flash`) that answer in 3–4 seconds.
+- Added strict 10s per-model timeouts on `google.genai` SDK calls to avoid tenacity retry locks.
+- Increased mobile network timeout from 20s to 75s to withstand cloud free-tier cold starts and mobile 5G cellular latency.
+- Added a live elapsed-second progress indicator in the mobile query loader with friendly real-time status updates.
+
+### 6. Automated Verification Suite
 - Comprehensive automated test suite in `tests/test_query_accuracy.py` verifying:
   - Totals (`SUM`)
   - Averages (`AVG`)

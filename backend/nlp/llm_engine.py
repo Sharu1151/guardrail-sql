@@ -450,7 +450,7 @@ DATABASE SCHEMA:
 {schema_text}
 """
 
-        candidate_models = ["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-2.5-flash", "gemini-3.8-flash"]
+        candidate_models = ["gemini-3.1-flash-lite-preview", "gemini-3.1-flash-lite", "gemini-3.6-flash", "gemini-3.5-flash-lite"]
 
         # 1. Try google.genai Client directly (fastest and most reliable)
         try:
@@ -461,7 +461,8 @@ DATABASE SCHEMA:
                     logger.info(f"[AI MODEL] Attempting Gemini model '{mod_name}' via google.genai...")
                     resp = client.models.generate_content(
                         model=mod_name,
-                        contents=f"{system_instruction}\n\nUser Question: {question}\nSQL Query:"
+                        contents=f"{system_instruction}\n\nUser Question: {question}\nSQL Query:",
+                        config={"http_options": {"timeout": 10000}}
                     )
                     clean_sql = sanitize_sql(resp.text or "")
                     if clean_sql and clean_sql.upper().startswith(("SELECT", "WITH")):
@@ -555,12 +556,13 @@ CRITICAL RULES:
 3. If multiple items are listed (e.g. top customers, regional breakdown), summarize them clearly with their specific metrics.
 4. If results contain 0 rows, clearly state that no records match."""
 
-            candidate_models = ["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-2.5-flash"]
+            candidate_models = ["gemini-3.1-flash-lite-preview", "gemini-3.1-flash-lite", "gemini-3.6-flash"]
             for mod_name in candidate_models:
                 try:
                     resp = client.models.generate_content(
                         model=mod_name,
-                        contents=prompt
+                        contents=prompt,
+                        config={"http_options": {"timeout": 10000}}
                     )
                     ans = (resp.text or "").strip()
                     if ans:

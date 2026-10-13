@@ -144,7 +144,7 @@ export default function App() {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout for query pipeline
+      const timeoutId = setTimeout(() => controller.abort(), 75000); // 75s timeout for cloud cold starts and deep AI analysis
 
       const res = await fetch(`${apiUrl}/api/query`, {
         method: 'POST',
@@ -173,7 +173,7 @@ export default function App() {
       console.error("Backend query execution failed:", netErr);
       const isAbort = netErr.name === 'AbortError';
       const msg = isAbort 
-        ? "Query timed out after 20 seconds. Please check backend response."
+        ? "Query timed out. The server or AI model is taking longer than usual to respond. Please try again."
         : (netErr.message || `Unable to reach backend server at ${apiUrl}. Please verify the backend service is running.`);
       setError(msg);
       setLoading(false);

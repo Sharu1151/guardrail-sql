@@ -2,7 +2,7 @@
 
 ## Architecture Overview
 - **FastAPI Backend**: `backend/main.py` (serves API, AST validation, schema retrieval, direct answer synthesis, and APK download).
-- **AI Engine**: `backend/nlp/llm_engine.py` using `google.genai` (`gemini-3.5-flash-lite`, `gemini-3.5-flash`, `gemini-2.5-flash`).
+- **AI Engine**: `backend/nlp/llm_engine.py` using `google.genai` (`gemini-3.1-flash-lite-preview`, `gemini-3.1-flash-lite`, `gemini-3.6-flash`, `gemini-3.5-flash-lite`).
 - **Database**: SQLite `data/sales_data.db` and PostgreSQL (`text_to_sql_db`).
 - **Mobile App**: `mobile/` React + Vite + Capacitor Android app.
 - **Versions Archive**: `versions/` containing all historical APKs and web bundles.

@@ -93,16 +93,24 @@ export default function QueryView({
   ];
 
   const [loadingStageIndex, setLoadingStageIndex] = useState(0);
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
 
   useEffect(() => {
     if (!loading) {
       setLoadingStageIndex(0);
+      setElapsedSeconds(0);
       return;
     }
     const interval = setInterval(() => {
       setLoadingStageIndex((prev) => (prev + 1) % LOADER_STAGES.length);
     }, 1400);
-    return () => clearInterval(interval);
+    const secTimer = setInterval(() => {
+      setElapsedSeconds((prev) => prev + 1);
+    }, 1000);
+    return () => {
+      clearInterval(interval);
+      clearInterval(secTimer);
+    };
   }, [loading]);
 
   // Question Explorer state
@@ -467,6 +475,11 @@ export default function QueryView({
               <h3 className="loader-title">{LOADER_STAGES[loadingStageIndex].title}</h3>
             </div>
             <p className="loader-subtitle">{LOADER_STAGES[loadingStageIndex].subtitle}</p>
+            {elapsedSeconds >= 6 && (
+              <p style={{ fontSize: '0.72rem', color: 'var(--accent-cyan)', marginTop: '6px', textAlign: 'center', opacity: 0.9 }}>
+                ⚡ Communicating with Gemini AI & Cloud DB ({elapsedSeconds}s)...
+              </p>
+            )}
           </div>
 
           <div className="loader-progress-bar-container">
