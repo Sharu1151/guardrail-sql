@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { 
-  Menu, X, ShieldCheck, UploadCloud, SlidersHorizontal, 
+  Menu, X, ShieldCheck, SlidersHorizontal, 
   Database, CheckCircle2, ChevronRight, Activity, Lock, Download
 } from 'lucide-react';
 
@@ -98,24 +98,6 @@ export default function Header({
                   <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
                     Multi-tier AST firewall & attack simulation
                   </span>
-                </div>
-                <ChevronRight size={16} color="var(--text-dim)" />
-              </button>
-
-              {/* 📥 Import Dataset */}
-              <button
-                type="button"
-                className={`drawer-nav-item ${activeTab === 'import' ? 'active' : ''}`}
-                onClick={() => handleSelectMenuItem('import')}
-              >
-                <div className="drawer-icon-box" style={{ background: 'rgba(56, 189, 248, 0.15)', color: 'var(--accent-cyan)' }}>
-                  <UploadCloud size={20} />
-                </div>
-                <div style={{ flex: 1, textAlign: 'left' }}>
-                  <span style={{ fontWeight: 600, fontSize: '0.88rem' }}>Import CSV / Excel</span>
-                  <p style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                    Upload new datasets into queryable tables
-                  </p>
                 </div>
                 <ChevronRight size={16} color="var(--text-dim)" />
               </button>
