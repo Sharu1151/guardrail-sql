@@ -433,8 +433,11 @@ CRITICAL INTENT RULES:
 4. Translate user intent precisely:
    - Questions about totals or sums require SUM()
    - Questions about averages require AVG()
-   - Questions about counts require COUNT()
+   - Questions about counts or frequency require COUNT()
    - Rankings or 'top N' require ORDER BY ... LIMIT N
+   - When asked for 'top customer' or 'top customers' without a specified metric, ALWAYS rank by total revenue/sales (SUM("Line Total") DESC), NOT by order count (COUNT(*)). Always include the customer name and total sales amount in the SELECT list.
+   - When asked for 'top product' or 'top products' without a specified metric, ALWAYS rank by total revenue (SUM("Line Total") DESC).
+   - Only use COUNT(*) when the user specifically asks for order volume, transaction count, frequency, or 'most orders'.
    - Grouped comparisons or breakdowns require GROUP BY where appropriate
 5. Dialect rules for {engine_dialect}:
    - SQLite: Dates in "OrderDate" are formatted as 'YYYY-MM-DD'. Use SUBSTR("OrderDate", 1, 4) for year and SUBSTR("OrderDate", 1, 7) for month. NEVER use EXTRACT() or TO_CHAR().
